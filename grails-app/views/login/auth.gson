@@ -1,0 +1,23 @@
+package login
+
+import grails.core.*
+import grails.util.*
+import grails.plugins.*
+import org.grails.core.artefact.*
+
+model {
+}
+
+response.status 200
+
+json {
+//  message "Forbiden test for login"
+//  error 001
+    message "Welcome to CMMV BackEnd!"
+    environment Environment.current.name
+    grailsversion GrailsUtil.grailsVersion
+    groovyversion GroovySystem.getVersion()
+    jvmversion System.getProperty('java.version')
+    reloadingagentenabled Environment.reloadingAgentEnabled
+
+}
