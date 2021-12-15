@@ -1,5 +1,6 @@
 package mz.org.fgh.cmmv.backend.protection
 
+import grails.converters.JSON
 import grails.plugin.springsecurity.rest.token.AccessToken
 import grails.plugin.springsecurity.rest.token.rendering.AccessTokenJsonRenderer
 import groovy.json.JsonBuilder
@@ -9,29 +10,53 @@ import mz.org.fgh.cmmv.backend.userLogin.UtenteLogin
 import mz.org.fgh.cmmv.backend.utente.Utente
 import org.springframework.security.core.GrantedAuthority
 
+import javax.transaction.Transactional
+
 /**
  * Created by Prakash Thete on 17/04/2018
  */
 class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
 
 //    @Override
+    @Transactional
     String generateJson(AccessToken accessToken){
-        def mainEntityAssociated = null
+        def mainEntityAssociated = ''
         def secUser = null
+        def source = ''
+
         SecUser.withTransaction {
             secUser = SecUser.get(accessToken.principal.id)
-
-            if(MobilizerLogin.get(secUser.id))
-                mainEntityAssociated = MobilizerLogin.get(secUser.id).district
-            else
-                if(UserLogin.get(secUser.id))
-                    mainEntityAssociated = UserLogin.get(secUser.id)
-            else
-                    if(UtenteLogin.get(secUser.id))
-                        mainEntityAssociated = "EMPTY - USER SELF REGISTRATION"
-            else mainEntityAssociated = "ADMIN/TESTER"
-
+            mainEntityAssociated = "ADMIN/TESTER"
         }
+
+        MobilizerLogin.withTransaction {
+            mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.id
+            source = 'Mobilizer'
+        }
+        /*
+        UserLogin.withTransaction {
+            mainEntityAssociated = "Clinic:"+ UserLogin.get(secUser.id)?.fullName
+        }
+        /*
+        UtenteLogin.withTransaction {
+            mainEntityAssociated = "Utente:"+ UtenteLogin.get(secUser.id)?.fullName
+        }/*
+          /*  if(MobilizerLogin.get(secUser.id)) {
+                mainEntityAssociated = MobilizerLogin.get(secUser.id).district
+
+                println(mainEntityAssociated.description)
+                println("Por Mobilizer")
+            } else
+                if(UserLogin.get(secUser.id)) {
+                    mainEntityAssociated = UserLogin.get(secUser.id)
+                    println("UserLogin")
+                }else
+                    if(UtenteLogin.get(secUser.id)) {
+                        mainEntityAssociated = "EMPTY - USER SELF REGISTRATION"
+                        println("UtenteLogin")
+                    }else
+                        mainEntityAssociated = "ADMIN/TESTER"
+*/
         // Add extra custom parameters if you want in this map to be rendered in login response
         Map response = [
                 id           : accessToken.principal.id,
@@ -40,7 +65,8 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 token_type   : "Bearer",
                 refresh_token: accessToken.refreshToken,
                 roles        : accessToken.authorities.collect { GrantedAuthority role -> role.authority },
-                mainEntity   : mainEntityAssociated
+                mainEntity   : mainEntityAssociated,
+                source       : source
         ]
 
         return new JsonBuilder( response ).toPrettyString()
