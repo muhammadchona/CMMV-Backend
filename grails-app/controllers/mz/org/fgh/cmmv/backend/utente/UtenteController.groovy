@@ -92,9 +92,9 @@ class UtenteController extends RestfulController{
 
           //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
        //    smsService.send(map)
-         Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
+        /* Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
                     new PhoneNumber(twilioPhoneNumber),
-                    messaging).create();
+                    messaging).create();*/
         } catch (ValidationException e) {
             respond utente.errors
             return
