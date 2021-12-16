@@ -26,12 +26,27 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
 
         SecUser.withTransaction {
             secUser = SecUser.get(accessToken.principal.id)
-            mainEntityAssociated = "ADMIN/TESTER"
+            mainEntityAssociated = 1
         }
 
         MobilizerLogin.withTransaction {
-            mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.id
-            source = 'Mobilizer'
+            if(MobilizerLogin.get(secUser.id)?.mobilizer?.id != null) {
+                mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.id
+                source = 'Mobilizer'
+            }
+        }
+
+        UserLogin.withTransaction {
+            if(UserLogin.get(secUser.id)?.clinic?.id != null) {
+                mainEntityAssociated = UserLogin.get(secUser.id).clinic.id
+                source = 'Clinic'
+            }
+        }
+        UtenteLogin.withTransaction {
+            if(UtenteLogin.get(secUser.id)?.utente?.id != null) {
+                mainEntityAssociated = UtenteLogin.get(secUser.id).utente.id
+                source = 'Utente'
+            }
         }
         /*
         UserLogin.withTransaction {
