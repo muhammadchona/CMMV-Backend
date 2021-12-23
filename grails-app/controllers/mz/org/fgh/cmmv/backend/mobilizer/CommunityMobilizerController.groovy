@@ -33,6 +33,7 @@ class CommunityMobilizerController extends RestfulController{
     }
 
     def show(Long id) {
+        println('Show_CommunityController')
   //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
    //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
     //    communityMobilizer.setUtentes(utentes)
@@ -47,6 +48,9 @@ class CommunityMobilizerController extends RestfulController{
         //    visitDetails.getEpisode().setPatientServiceIdentifier(null)
     //    }
        // render Utilities.parseToJSON(communityMobilizer)
+
+        /*def mobilizer = CommunityMobilizer.findById(id, [fetch:[utentes:"join"]])
+        render (mobilizer as Map, [expand:['utentes']]) as JSON*/
     }
 
     @Transactional

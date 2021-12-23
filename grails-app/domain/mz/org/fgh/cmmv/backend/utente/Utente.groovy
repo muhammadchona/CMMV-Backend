@@ -37,6 +37,8 @@ class Utente {
 
     static hasMany = [infoDocsImages: InfoDocsOrImages, address:Address]
 
+    static fetchMode = [address: 'eager']
+
     static constraints = {
         lastNames(nullable: false, blank: false)
         birthDate(nullable: false, blank: true, validator: { birthDate, urc ->
