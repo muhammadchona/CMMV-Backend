@@ -27,7 +27,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the save action correctly persists"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * save(_ as CommunityMobilizer)
         }
 
@@ -71,7 +71,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * save(_ as CommunityMobilizer) >> { CommunityMobilizer communityMobilizer ->
                 throw new ValidationException("Invalid instance", communityMobilizer.errors)
             }
@@ -91,7 +91,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the show action with a null id"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the show action with a valid id"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * get(2) >> new CommunityMobilizer()
         }
 
@@ -129,7 +129,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the update action correctly persists"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * save(_ as CommunityMobilizer)
         }
 
@@ -150,7 +150,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * save(_ as CommunityMobilizer) >> { CommunityMobilizer communityMobilizer ->
                 throw new ValidationException("Invalid instance", communityMobilizer.errors)
             }
@@ -181,7 +181,7 @@ class CommunityMobilizerControllerSpec extends Specification implements Controll
 
     void "Test the delete action with an instance"() {
         given:
-        controller.communityMobilizerService = Mock(CommunityMobilizerService) {
+        controller.communityMobilizerService = Mock(ICommunityMobilizerService) {
             1 * delete(2) >> new CommunityMobilizer(id: 2)
         }
 
