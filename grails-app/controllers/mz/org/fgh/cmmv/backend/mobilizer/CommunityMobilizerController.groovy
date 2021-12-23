@@ -3,7 +3,6 @@ package mz.org.fgh.cmmv.backend.mobilizer
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.cmmv.backend.utente.Utente
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -14,7 +13,7 @@ import grails.gorm.transactions.Transactional
 
 class CommunityMobilizerController extends RestfulController{
 
-    CommunityMobilizerService communityMobilizerService
+    ICommunityMobilizerService communityMobilizerService
 
    // Utente utenteService
     static responseFormats = ['json', 'xml']
@@ -27,30 +26,26 @@ class CommunityMobilizerController extends RestfulController{
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
 
-   //     JSON.use('deep'){
-            render communityMobilizerService.list(params) as JSON
-    //    }
+        //     JSON.use('deep'){
+        render communityMobilizerService.list(params) as JSON
+        //    }
     }
 
     def show(Long id) {
-        println('Show_CommunityController')
-  //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
-   //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
-    //    communityMobilizer.setUtentes(utentes)
-   //    JSON.use('deep'){
-            respond communityMobilizerService.get(id)
-       // }
-    //    for (Utente utente : communityMobilizer.getUtentes()) {
-    //        utente.getAddress().getAt(0).setDistrict(null)
-      //      utente.getAddress().getAt(0).setUtente(null)
-       //     utente.setMobilizer(null)
+        //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
+        //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
+        //    communityMobilizer.setUtentes(utentes)
+        //    JSON.use('deep'){
+        respond communityMobilizerService.get(id)
+        // }
+        //    for (Utente utente : communityMobilizer.getUtentes()) {
+        //        utente.getAddress().getAt(0).setDistrict(null)
+        //      utente.getAddress().getAt(0).setUtente(null)
+        //     utente.setMobilizer(null)
         //    visitDetails.getEpisode().setPatientVisitDetails(null)
         //    visitDetails.getEpisode().setPatientServiceIdentifier(null)
-    //    }
-       // render Utilities.parseToJSON(communityMobilizer)
-
-        /*def mobilizer = CommunityMobilizer.findById(id, [fetch:[utentes:"join"]])
-        render (mobilizer as Map, [expand:['utentes']]) as JSON*/
+        //    }
+        // render Utilities.parseToJSON(communityMobilizer)
     }
 
     @Transactional
@@ -105,5 +100,10 @@ class CommunityMobilizerController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def searchByClinicId(Long clinicId){
+
+        respond communityMobilizerService.getAllByClinicId(clinicId)
     }
 }

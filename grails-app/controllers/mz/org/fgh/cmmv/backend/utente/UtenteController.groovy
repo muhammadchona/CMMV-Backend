@@ -3,13 +3,10 @@ package mz.org.fgh.cmmv.backend.utente
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.cmmv.backend.address.Address
-import mz.org.fgh.cmmv.backend.address.AddressService
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.messages.MessageService
-import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
-import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizerService
+import mz.org.fgh.cmmv.backend.mobilizer.ICommunityMobilizerService
 
 //import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -25,9 +22,8 @@ import grails.gorm.transactions.Transactional
 class UtenteController extends RestfulController{
 
     IUtenteService utenteService
-    AddressService addressService
     ClinicService clinicService
-    CommunityMobilizerService communityMobilizerService
+    ICommunityMobilizerService communityMobilizerService
     def smsService
     MessageService messageService;
 
@@ -42,24 +38,17 @@ class UtenteController extends RestfulController{
     }
 
     def index(Integer max) {
-        println('Index_UtenteController')
         params.max = Math.min(max ?: 10, 100)
 
-        JSON.use('deep'){
-            render utenteService.list(params) as JSON
-        }
-        /*
-        def utentes = Utente.findAll([fetch:[address:"join"]])
-        render (utentes as Map, [expand:['address']]) as JSON
-
-         */
+        //     JSON.use('deep'){
+        respond utenteService.list(params)
+        //    }
     }
 
     def show(Long id) {
-        println('Show_UtenteController')
-  //      JSON.use('deep'){
-            render utenteService.get(id) as JSON
-  //      }
+        //      JSON.use('deep'){
+        respond utenteService.get(id)
+        //      }
     }
 
     def search(String systemNumber){
@@ -82,30 +71,27 @@ class UtenteController extends RestfulController{
         }
 
         try {
-           // utente.setUser(new UtenteLogin())
+            // utente.setUser(new UtenteLogin())
 //            utente.getUser().setUsername(utente.getFirstNames())
-      //      utente.getUser().setPassword(utente.getLastNames())
-       //     utente.getUser().setUtente(utente)
+            //      utente.getUser().setPassword(utente.getLastNames())
+            //     utente.getUser().setUtente(utente)
             utente.setSystemNumber(utente.getFirstNames().substring(0,1)+utente.getLastNames().substring(0,1)+"-"+utente.getCellNumber())
             utenteService.save(utente)
-          /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+              System.out.println(message.getSid());*/
 
-
-            System.out.println(message.getSid());*/
-
-       //     String messaging = "Muito Obrigado por ter se cadastrado na Aplicação de circuncisão masculina. O seu codigo de utente é:"+""+utente.getSystemNumber();
+            //     String messaging = "Muito Obrigado por ter se cadastrado na Aplicação de circuncisão masculina. O seu codigo de utente é:"+""+utente.getSystemNumber();
 
             String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
 
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
-            messageService.save(message)
+            messageService.save(message);
 
-          //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
-       //    smsService.send(map)
-            /*
-        Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
+            //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
+            //    smsService.send(map)
+            Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
                     new PhoneNumber(twilioPhoneNumber),
-                    messaging).create() */
+                    messaging).create();
         } catch (ValidationException e) {
             respond utente.errors
             return
@@ -163,93 +149,19 @@ class UtenteController extends RestfulController{
         }
     }
     def searchByMobilizerId(Long communityMobilizerId){
-            println('Mabjaia')
-        JSON.use('deep'){
-            CommunityMobilizer communityMobilizer = communityMobilizerService.get(communityMobilizerId)
-            render Utente.findAllByCommunityMobilizer(communityMobilizer) as JSON
-        }
-            //   UtenteService.fin
-            //    def utentes = utenteService.getAllByMobilizerId(communityMobilizerId)
-            //   render Utilities.parseToJSON(utentes)
-            //Mabj respond utenteService.getAllByMobilizerId(communityMobilizerId)
-            //JSON.use('deep') {
-            //    render utenteService.getAllByMobilizerId(communityMobilizerId) as JSON
-            // }
-            //   render utenteService.getAllByMobilizerId(communityMobilizerId) as GSON
-/*
-            Set<Address> addressesAux = null
-            CommunityMobilizer communityMobilizerAux
-            Address addressAux
-
-            def mobilizer = communityMobilizerService.get(communityMobilizerId)
-            def utentes = Utente.findAllByCommunityMobilizer(mobilizer, [fetch: [address: "join"]])
-
-            utentes.eachWithIndex { utente, index ->
-                utente.address.eachWithIndex{ address, i ->
-                    addressAux = addressService.get(address.id)
-
-                    if(addressAux) {
-                        addressesAux?.add(addressAux)
-                    }
-                    println(addressAux.neighboorhood)
-                }
-                utentes[index].address.removeAll()
-                utentes[index].address = addressesAux
-                addressesAux = null
-            }
-
-            // println('Utentes: '+utentes.class)
-            //println('Address: '+utentes[0].address.class)
-            render utentes as JSON
-*/
-            /*
-        def mobilizer = communityMobilizerService.get(communityMobilizerId)
-        //def utentes = Utente.findAllByCommunityMobilizer(mobilizer, [fetch:[address:"join"]])
-        def utentes = Utente.findAllByCommunityMobilizer(mobilizer)
-
-        render(contentType: "application/json") {
-            utentes {
-                for (utente in utentes) {
-                    utente(firstNames: utente.firstNames,
-                            lastNames: utente.lastNames,
-                            birthDate: utente.birthDate,
-                            cellNumber: utente.cellNumber,
-                            whatsappNumber: utente.whatsappNumber,
-                            preferedLanguage: utente.preferedLanguage,
-                            documentType: utente.documentType,
-                            documentNumber: utente.documentNumber,
-                            systemNumber: utente.systemNumber,
-                            haspartner: utente.haspartner,
-                            status: utente.status,
-                            address: utente.address)
-                }
-            } */
-            /*
-            def mobilizer = communityMobilizerService.get(communityMobilizerId)
-            //def utentes = Utente.findAllByCommunityMobilizer(mobilizer, [fetch:[address:"join"]])
-            def results = Utente.findAllByCommunityMobilizer(mobilizer)
-            println(results[0] as JSON)
-            render(contentType: "application/json") {
-                utentes(results) { Utente utente ->
-                    firstNames utente.firstNames
-                    lastNames utente.lastNames
-                    birthDate utente.birthDate
-                    cellNumber utente.cellNumber
-                    whatsappNumber utente.whatsappNumber
-                    preferedLanguage utente.preferedLanguage
-                    documentType utente.documentType
-                    documentNumber utente.documentNumber
-                    systemNumber utente.systemNumber
-                    haspartner utente.haspartner
-                    status utente.status
-                    address utente.address
-                }
-            }
-            */
-            /*
-        def json = request.JSON
-        json render(utentes, [expand:['address']])*/
-        }
+        /*     JSON.use('deep'){
+                 CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
+                 render Utente.findAllByCommunityMobilizer(communityMobilizer) as JSON
+             }*/
+        //   UtenteService.fin
+        //    def utentes = utenteService.getAllByMobilizerId(communityMobilizerId)
+        //   render Utilities.parseToJSON(utentes)
+        respond utenteService.getAllByMobilizerId(communityMobilizerId)
+        //JSON.use('deep') {
+        //    render utenteService.getAllByMobilizerId(communityMobilizerId) as JSON
+        // }
+        //   render utenteService.getAllByMobilizerId(communityMobilizerId) as GSON
+    }
 
     private mz.org.fgh.cmmv.backend.messages.Message buildMessage(Utente utente,String sms) {
         mz.org.fgh.cmmv.backend.messages.Message message = new mz.org.fgh.cmmv.backend.messages.Message();
@@ -257,6 +169,6 @@ class UtenteController extends RestfulController{
         message.setDescription(sms);
         message.setMessageType("SMS")
         message.setSmsDate(new Date())
-       return message;
+        return message;
     }
 }

@@ -44,12 +44,15 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**/images/**',   filters: 'none'],
         [pattern: '/**/favicon.ico', filters: 'none'],
         [pattern: '/auth', 			 filters: 'none'],
-        [pattern: '/**',             filters: 'JOINED_FILTERS']
+        [pattern: '/**',             filters: 'JOINED_FILTERS'],
+        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/api/**', 	filters:'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter'],
-        [pattern: '/**', 		filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
+        [pattern: '/**', 		filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'],
+        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter']
 ]
 
 grails.plugin.springsecurity.rest.token.storage.useJwt=true
@@ -67,3 +70,5 @@ grails.plugin.springsecurity.rest.logout.endpointUrl = '/api/logout'
 grails.plugin.springsecurity.logout.postOnly = false
 
 grails.plugin.springsecurity.rejectIfNoRule = false
+
+grails.plugins.springsecurity.password.bcrypt.logrounds = 12
