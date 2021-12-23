@@ -3,7 +3,6 @@ package mz.org.fgh.cmmv.backend.mobilizer
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.cmmv.backend.utente.Utente
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -14,7 +13,7 @@ import grails.gorm.transactions.Transactional
 
 class CommunityMobilizerController extends RestfulController{
 
-    CommunityMobilizerService communityMobilizerService
+    ICommunityMobilizerService communityMobilizerService
 
    // Utente utenteService
     static responseFormats = ['json', 'xml']
@@ -101,5 +100,10 @@ class CommunityMobilizerController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def searchByClinicId(Long clinicId){
+
+        respond communityMobilizerService.getAllByClinicId(clinicId)
     }
 }

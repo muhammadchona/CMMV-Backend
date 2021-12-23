@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class CommunityMobilizerServiceSpec extends Specification {
+class ICommunityMobilizerServiceSpec extends Specification {
 
-    CommunityMobilizerService communityMobilizerService
+    ICommunityMobilizerService communityMobilizerService
     @Autowired Datastore datastore
 
     private Long setupData() {

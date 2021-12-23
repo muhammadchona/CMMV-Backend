@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import mz.org.fgh.cmmv.backend.address.Address
+import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 
 class District {
 
@@ -15,7 +16,7 @@ class District {
     Province province
 
 
-    static hasMany = [addresses: Address]
+    static hasMany = [addresses: Address, mobilizers: CommunityMobilizer]
   //  @JsonIgnoreProperties("districts")
     static belongsTo = [province: Province]
 

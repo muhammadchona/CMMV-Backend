@@ -39,6 +39,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 access_token : accessToken.accessToken,
                 token_type   : "Bearer",
                 refresh_token: accessToken.refreshToken,
+                password : secUser.password,
                 roles        : accessToken.authorities.collect { GrantedAuthority role -> role.authority },
                 mainEntity   : mainEntityAssociated
         ]

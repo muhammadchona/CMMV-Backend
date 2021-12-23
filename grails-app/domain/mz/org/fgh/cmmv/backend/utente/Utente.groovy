@@ -46,7 +46,7 @@ class Utente {
         whatsappNumber(nullable: false, matches: /\d+/, maxSize: 12, minSize: 9)
         documentType(nullable: true, blank: true)
         documentNumber(nullable: true, blank: true)
-        systemNumber(nullable: true, blank: true)
+        systemNumber(nullable: true, blank: true    )
         preferedLanguage(nullable: true)
         infoDocsImages(nullable: true)
         communityMobilizer(nullable: true)
