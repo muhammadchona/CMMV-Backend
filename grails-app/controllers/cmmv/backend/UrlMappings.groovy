@@ -13,7 +13,13 @@ class UrlMappings {
         // add mapping for Utente search by param systemNumber clinjc and appointment
         get "/api/utente/$systemNumber(.$format)?"(controller:'utente', action:'search')
         get "/api/utente/clinic/$id(.$format)?"(controller:'utente', action:'searchByClinicId')
+
+        get "/api/clinic/utente/$utenteId(.$format)?"(controller:'utente', action:'searchClinicByUtente')
+        get "/api/addresses/utente/$utenteId(.$format)?"(controller:'utente', action:'searchAddressesForUtente')
+
         get "/api/appointment/clinic/$id(.$format)?"(controller:'appointment', action:'searcAppointmentsByClinicId')
+        get "/api/utente/appointment/$appointmentId(.$format)?"(controller:'appointment', action:'searcAppointmentsByClinicId')
+
         get "/api/utente/communityMobilizer/$communityMobilizerId(.$format)?"(controller:'utente', action:'searchByMobilizerId')
         get "/api/communityMobilizer/clinic/$clinicId(.$format)?"(controller:'communityMobilizer', action:'searchByClinicId')
         "/"(view:"/login/auth")

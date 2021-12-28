@@ -163,6 +163,17 @@ class UtenteController extends RestfulController{
         //   render utenteService.getAllByMobilizerId(communityMobilizerId) as GSON
     }
 
+    def searchClinicByUtente(Long utenteId){
+        def utente = utenteService.get(utenteId)
+        println(utente?.clinic as JSON)
+        render 'utente?.clinic as JSON'
+    }
+    def searchAddressesForUtente(Long utenteId){
+        def utente = utenteService.get(utenteId)
+        println(utente.address as JSON)
+        render utente.address as JSON
+    }
+
     private mz.org.fgh.cmmv.backend.messages.Message buildMessage(Utente utente,String sms) {
         mz.org.fgh.cmmv.backend.messages.Message message = new mz.org.fgh.cmmv.backend.messages.Message();
         message.setUser(utente);
