@@ -27,7 +27,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the save action correctly persists"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * save(_ as SecRole)
         }
 
@@ -71,7 +71,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * save(_ as SecRole) >> { SecRole secRole ->
                 throw new ValidationException("Invalid instance", secRole.errors)
             }
@@ -91,7 +91,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a null id"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a valid id"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * get(2) >> new SecRole()
         }
 
@@ -129,7 +129,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the update action correctly persists"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * save(_ as SecRole)
         }
 
@@ -150,7 +150,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * save(_ as SecRole) >> { SecRole secRole ->
                 throw new ValidationException("Invalid instance", secRole.errors)
             }
@@ -181,7 +181,7 @@ class SecRoleControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the delete action with an instance"() {
         given:
-        controller.secRoleService = Mock(SecRoleService) {
+        controller.secRoleService = Mock(ISecRoleService) {
             1 * delete(2) >> new SecRole(id: 2)
         }
 

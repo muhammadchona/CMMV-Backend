@@ -3,6 +3,12 @@ package mz.org.fgh.cmmv.backend.mobilizer
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.protection.ISecRoleService
+import mz.org.fgh.cmmv.backend.protection.SecRole
+import mz.org.fgh.cmmv.backend.protection.SecUser
+import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
+import mz.org.fgh.cmmv.backend.protection.SecUserService
+import mz.org.fgh.cmmv.backend.userLogin.MobilizerLogin
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -14,6 +20,8 @@ import grails.gorm.transactions.Transactional
 class CommunityMobilizerController extends RestfulController{
 
     ICommunityMobilizerService communityMobilizerService
+    ISecRoleService secRoleService
+    SecUserService secUserService
 
    // Utente utenteService
     static responseFormats = ['json', 'xml']
@@ -62,6 +70,15 @@ class CommunityMobilizerController extends RestfulController{
 
         try {
             communityMobilizerService.save(communityMobilizer)
+
+            MobilizerLogin mobilizerLogin = new MobilizerLogin()
+            mobilizerLogin.setUsername(communityMobilizer.getFirstNames())
+            mobilizerLogin.setFullName(communityMobilizer.getFirstNames())
+            mobilizerLogin.setPassword('admin')
+            mobilizerLogin.setMobilizer(communityMobilizer)
+            SecRole secRole = secRoleService.getSecRoleByAuthority('ROLE_MOBILIZER')
+            secUserService.save(mobilizerLogin)
+            SecUserSecRole.create mobilizerLogin, secRole
         } catch (ValidationException e) {
             respond communityMobilizer.errors
             return
@@ -102,8 +119,8 @@ class CommunityMobilizerController extends RestfulController{
         render status: NO_CONTENT
     }
 
-    def searchByClinicId(Long clinicId){
+    def searchByDistrictId(Long districtId){
 
-        respond communityMobilizerService.getAllByClinicId(clinicId)
+        respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }
