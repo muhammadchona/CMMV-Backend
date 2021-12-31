@@ -7,10 +7,12 @@ import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.messages.MessageService
 import mz.org.fgh.cmmv.backend.mobilizer.ICommunityMobilizerService
+import mz.org.fgh.cmmv.backend.*
 
 //import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -143,20 +145,15 @@ class UtenteController extends RestfulController{
     }
 
     def searchByClinicId(Long id){
-        JSON.use('deep'){
-            Clinic clinic = clinicService.get(id)
-            render Utente.findAllByClinic(clinic) as JSON
-        }
+        Clinic clinic = clinicService.get(id)
+        render JSONSerializer.setJsonObjectResponse(Utente.findAllByClinic(clinic)) as JSON
     }
     def searchByMobilizerId(Long communityMobilizerId){
-        /*     JSON.use('deep'){
-                 CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
-                 render Utente.findAllByCommunityMobilizer(communityMobilizer) as JSON
-             }*/
-        //   UtenteService.fin
-        //    def utentes = utenteService.getAllByMobilizerId(communityMobilizerId)
-        //   render Utilities.parseToJSON(utentes)
-        respond utenteService.getAllByMobilizerId(communityMobilizerId)
+
+        println(utenteService.getAllByMobilizerId(communityMobilizerId) as JSON)
+        render JSONSerializer.setJsonObjectResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
+
+
         //JSON.use('deep') {
         //    render utenteService.getAllByMobilizerId(communityMobilizerId) as JSON
         // }
