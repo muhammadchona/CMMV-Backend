@@ -113,10 +113,17 @@ class AppointmentController extends RestfulController{
         render status: NO_CONTENT
     }
 
+    // Retornar as consultas duma determinada clinic/US
     def searcAppointmentsByClinicId(Long id){
-        JSON.use('deep'){
-            Clinic clinic = clinicService.get(id)
+        //JSON.use('deep'){
+        Clinic clinic = clinicService.get(id)
         render Appointment.findAllByClinic(clinic) as JSON
-        }
+        //}
+    }
+
+    // Retornar o utente da consulta
+    def getUtenteForAppointment(Long appointmentId){
+        Appointment appointment1 = appointmentService.get(appointmentId)
+        render Utente.get(appointment1.utenteId) as JSON
     }
 }

@@ -34,26 +34,26 @@ class CommunityMobilizerController extends RestfulController{
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
 
-   //     JSON.use('deep'){
-            render communityMobilizerService.list(params) as JSON
-    //    }
+        //     JSON.use('deep'){
+        render communityMobilizerService.list(params) as JSON
+        //    }
     }
 
     def show(Long id) {
-  //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
-   //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
-    //    communityMobilizer.setUtentes(utentes)
-   //    JSON.use('deep'){
-            respond communityMobilizerService.get(id)
-       // }
-    //    for (Utente utente : communityMobilizer.getUtentes()) {
-    //        utente.getAddress().getAt(0).setDistrict(null)
-      //      utente.getAddress().getAt(0).setUtente(null)
-       //     utente.setMobilizer(null)
+        //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
+        //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
+        //    communityMobilizer.setUtentes(utentes)
+        //    JSON.use('deep'){
+        respond communityMobilizerService.get(id)
+        // }
+        //    for (Utente utente : communityMobilizer.getUtentes()) {
+        //        utente.getAddress().getAt(0).setDistrict(null)
+        //      utente.getAddress().getAt(0).setUtente(null)
+        //     utente.setMobilizer(null)
         //    visitDetails.getEpisode().setPatientVisitDetails(null)
         //    visitDetails.getEpisode().setPatientServiceIdentifier(null)
-    //    }
-       // render Utilities.parseToJSON(communityMobilizer)
+        //    }
+        // render Utilities.parseToJSON(communityMobilizer)
     }
 
     @Transactional

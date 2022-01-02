@@ -23,6 +23,7 @@ class ClinicController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
+        println('Index_Clinic')
 
         JSON.use('deep'){
             render clinicService.list(params) as JSON
