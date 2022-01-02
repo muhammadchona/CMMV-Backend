@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class SecRoleServiceSpec extends Specification {
+class ISecRoleServiceSpec extends Specification {
 
-    SecRoleService secRoleService
+    ISecRoleService secRoleService
     @Autowired Datastore datastore
 
     private Long setupData() {

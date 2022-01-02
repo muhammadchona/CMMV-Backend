@@ -22,9 +22,6 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
 
-grails {
-    pathingJar = true
-}
 
 configurations {
     developmentOnly

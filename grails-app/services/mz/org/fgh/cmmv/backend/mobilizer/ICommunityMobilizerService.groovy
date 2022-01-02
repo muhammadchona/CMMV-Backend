@@ -16,6 +16,6 @@ interface ICommunityMobilizerService {
 
     CommunityMobilizer save(CommunityMobilizer communityMobilizer)
 
-    List<CommunityMobilizer> getAllByClinicId(Long clinicId)
+    List<CommunityMobilizer> getAllByDistrictId(Long districtId)
 
 }

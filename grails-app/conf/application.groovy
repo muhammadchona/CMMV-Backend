@@ -33,7 +33,10 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
         [pattern: '/secRole/**', 		access: ['ROLE_ADMIN']],
         [pattern: '/role/**', 			access: ['ROLE_ADMIN']],
         [pattern: '/securityInfo/**', 	access: ['ROLE_ADMIN']],
-        [pattern: '/registationCode/**', access: ['ROLE_ADMIN']]
+        [pattern: '/registationCode/**', access: ['ROLE_ADMIN']],
+        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
 
 ]
 
@@ -44,15 +47,20 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**/images/**',   filters: 'none'],
         [pattern: '/**/favicon.ico', filters: 'none'],
         [pattern: '/auth', 			 filters: 'none'],
-        [pattern: '/**',             filters: 'JOINED_FILTERS'],
         [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/**',             filters: 'JOINED_FILTERS'],
+
 
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [
+        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
         [pattern: '/api/**', 	filters:'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter'],
-        [pattern: '/**', 		filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'],
-        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter']
+        [pattern: '/**', 		filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
 ]
 
 grails.plugin.springsecurity.rest.token.storage.useJwt=true

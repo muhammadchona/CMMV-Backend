@@ -10,7 +10,7 @@ import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 abstract class CommunityMobilizerService implements ICommunityMobilizerService{
 
     @Override
-    List<CommunityMobilizer> getAllByClinicId(Long clinicId) {
-        return CommunityMobilizer.findAllByClinic(Clinic.findById(clinicId))
+    List<CommunityMobilizer> getAllByDistrictId(Long districtId) {
+        return CommunityMobilizer.findAllByDistrict(Clinic.findById(districtId))
     }
 }

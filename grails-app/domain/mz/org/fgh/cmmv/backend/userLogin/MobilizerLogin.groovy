@@ -14,5 +14,7 @@ class MobilizerLogin extends SecUser{
 
     static constraints = {
         mobilizer nullable: true
+        province nullable: true
+        district nullable: true
     }
 }
