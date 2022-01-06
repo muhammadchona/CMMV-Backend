@@ -86,6 +86,6 @@ class SecRoleController extends RestfulController {
     }
 
     def getSecRoleByAuthority(String authority) {
-        respond secRoleService.getSecRoleByAuthority(authority)
+        respond SecRole.findByAuthority(authority)
     }
 }

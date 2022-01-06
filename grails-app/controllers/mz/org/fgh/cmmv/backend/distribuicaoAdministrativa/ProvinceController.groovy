@@ -3,6 +3,7 @@ package mz.org.fgh.cmmv.backend.distribuicaoAdministrativa
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import sun.misc.Resource
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -29,13 +30,15 @@ class ProvinceController extends RestfulController{
         params.max = Math.min(max ?: 10, 100)
 
     //    JSON.use('deep'){
-            render provinceService.list(params) as JSON
+           // render provinceService.list(params) as JSON
+        render JSONSerializer.setObjectListJsonResponse(provinceService.list(params)) as JSON
     //    }
     }
 
     def show(Long id) {
        // JSON.use('deep'){
-            render provinceService.get(id) as JSON
+          //  render provinceService.get(id) as JSON
+        render JSONSerializer.setJsonObjectResponse(provinceService.get(id)) as JSON
       //  }
     }
 

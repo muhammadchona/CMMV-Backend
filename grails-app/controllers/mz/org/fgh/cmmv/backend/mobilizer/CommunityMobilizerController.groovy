@@ -5,6 +5,7 @@ import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.protection.ISecRoleService
 import mz.org.fgh.cmmv.backend.protection.SecRole
+import mz.org.fgh.cmmv.backend.protection.SecRoleController
 import mz.org.fgh.cmmv.backend.protection.SecUser
 import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
 import mz.org.fgh.cmmv.backend.protection.SecUserService
@@ -20,7 +21,7 @@ import grails.gorm.transactions.Transactional
 class CommunityMobilizerController extends RestfulController{
 
     ICommunityMobilizerService communityMobilizerService
-    ISecRoleService secRoleService
+    SecRoleController secRoleController
     SecUserService secUserService
 
    // Utente utenteService
@@ -72,11 +73,13 @@ class CommunityMobilizerController extends RestfulController{
             communityMobilizerService.save(communityMobilizer)
 
             MobilizerLogin mobilizerLogin = new MobilizerLogin()
-            mobilizerLogin.setUsername(communityMobilizer.getFirstNames())
-            mobilizerLogin.setFullName(communityMobilizer.getFirstNames())
+            mobilizerLogin.setUsername(communityMobilizer.getFirstNames().substring(0,1)+''+communityMobilizer.getLastNames())
+            mobilizerLogin.setFullName(communityMobilizer.getFirstNames() +' '+communityMobilizer.getLastNames())
             mobilizerLogin.setPassword('admin')
             mobilizerLogin.setMobilizer(communityMobilizer)
-            SecRole secRole = secRoleService.getSecRoleByAuthority('ROLE_MOBILIZER')
+            mobilizerLogin.setProvince(communityMobilizer.getDistrict().getProvince())
+            mobilizerLogin.setDistrict(communityMobilizer.getDistrict())
+            SecRole secRole = SecRole.findByAuthority('ROLE_MOBILIZER')
             secUserService.save(mobilizerLogin)
             SecUserSecRole.create mobilizerLogin, secRole
         } catch (ValidationException e) {

@@ -2,6 +2,8 @@ package mz.org.fgh.cmmv.backend.protection
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.userLogin.MobilizerLogin
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -34,6 +36,10 @@ class SecUserController extends RestfulController {
 
     @Transactional
     def save(SecUser secUser) {
+
+    //   secUser.fullName = secUser.username
+        SecRole secRole = SecRole.findByAuthority('ROLE_USER')
+
         if (secUser == null) {
             render status: NOT_FOUND
             return
@@ -46,6 +52,7 @@ class SecUserController extends RestfulController {
 
         try {
             secUserService.save(secUser)
+            SecUserSecRole.create secUser, secRole
         } catch (ValidationException e) {
             respond secUser.errors
             return
@@ -84,5 +91,20 @@ class SecUserController extends RestfulController {
         }
 
         render status: NO_CONTENT
+    }
+
+    @Transactional
+    def changePassword(SecUser secUser) {
+
+        try {
+            SecUser secUserDb =  SecUser.findById(secUser.id)
+            secUserDb.password = secUser.password
+            secUserService.save(secUserDb)
+        } catch (ValidationException e) {
+            respond secRole.errors
+            return
+        }
+
+        respond secUser, [status: OK, view:"show"]
     }
 }
