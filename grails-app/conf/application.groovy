@@ -20,23 +20,20 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
         [pattern: '/**/css/**', 		access: ['permitAll']],
         [pattern: '/**/images/**', 		access: ['permitAll']],
         [pattern: '/**/favicon.ico', 	access: ['permitAll']],
+        [pattern: '/api/province', 		access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
         [pattern: '/**/**', 			access: ['permitAll']],
         [pattern: '/api/', 				access: ['permitAll']],
         [pattern: '/api/management/**', access: ['isAuthenticated()']],
         [pattern: '/api/login', 		access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
         [pattern: '/api/logout', 		access: ['isAuthenticated()']],
-        [pattern: '/api/province', 		access: ['permitAll']],
         [pattern: '/dbconsole/**',		access: ['permitAll']],
         [pattern: '/plugins/**', 		access: ['permitAll']],
-        [pattern: '/secUser/**', 		access: ['ROLE_ADMIN']],
+        [pattern: '/secUser/**', 		access: ['permitAll']],
         [pattern: '/user/**', 			access: ['ROLE_ADMIN']],
         [pattern: '/secRole/**', 		access: ['ROLE_ADMIN']],
         [pattern: '/role/**', 			access: ['ROLE_ADMIN']],
         [pattern: '/securityInfo/**', 	access: ['ROLE_ADMIN']],
-        [pattern: '/registationCode/**', access: ['ROLE_ADMIN']],
-        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
-        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
-        [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/registationCode/**', access: ['ROLE_ADMIN']]
 
 ]
 
@@ -47,9 +44,6 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**/images/**',   filters: 'none'],
         [pattern: '/**/favicon.ico', filters: 'none'],
         [pattern: '/auth', 			 filters: 'none'],
-        [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
-        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
-        [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
         [pattern: '/**',             filters: 'JOINED_FILTERS'],
 
 
@@ -57,11 +51,13 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 
 grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/api/province',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
-        [pattern: '/api/districts',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+        [pattern: '/api/district',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
         [pattern: '/api/clinic',   filters:'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
         [pattern: '/api/**', 	filters:'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter'],
         [pattern: '/**', 		filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
 ]
+
+
 
 grails.plugin.springsecurity.rest.token.storage.useJwt=true
 grails.plugin.springsecurity.rest.token.storage.jwt.useSignedJwt=true

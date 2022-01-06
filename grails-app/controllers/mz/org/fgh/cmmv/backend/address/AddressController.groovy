@@ -25,16 +25,11 @@ class AddressController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-        JSON.use('deep'){
             render addressService.list(params) as JSON
-        }
     }
 
     def show(Long id) {
-        JSON.use('deep'){
             render addressService.get(id) as JSON
-        }
     }
 
     @Transactional

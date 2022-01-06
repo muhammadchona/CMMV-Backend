@@ -82,7 +82,8 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 password : secUser.password,
                 roles        : accessToken.authorities.collect { GrantedAuthority role -> role.authority },
                 mainEntity   : mainEntityAssociated,
-                source       : source
+                source       : source,
+
         ]
 
         return new JsonBuilder( response ).toPrettyString()

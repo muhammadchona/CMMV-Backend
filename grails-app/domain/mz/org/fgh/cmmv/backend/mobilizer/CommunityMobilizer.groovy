@@ -15,7 +15,7 @@ class CommunityMobilizer {
     String cellNumber2
     String uuid
 
-    @JsonManagedReference
+  //  @JsonManagedReference
     static hasMany = [docsOrImages: InfoDocsOrImages, utentes:Utente]
 
 

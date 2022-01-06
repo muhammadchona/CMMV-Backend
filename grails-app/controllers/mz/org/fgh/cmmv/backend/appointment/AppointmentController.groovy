@@ -6,12 +6,15 @@ import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.utente.Utente
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+import mz.org.fgh.cmmv.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
+import org.apache.commons.lang3.time.DateUtils;
 import grails.gorm.transactions.Transactional
 
 class AppointmentController extends RestfulController{
@@ -28,26 +31,18 @@ class AppointmentController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-        JSON.use('deep'){
             render appointmentService.list(params) as JSON
-        }
     }
 
     def getAllOfUtente(Long utenteId) {
         params.max = Math.min(max ?: 10, 100)
         Utente utente
         utente.setId(utenteId)
-        JSON.use('deep'){
             render Appointment.findAllByUtente(utente) as JSON
-        }
     }
 
     def show(Long id) {
-
-        JSON.use('deep'){
             render appointmentService.get(id) as JSON
-        }
     }
 
     @Transactional
@@ -126,4 +121,18 @@ class AppointmentController extends RestfulController{
         Appointment appointment1 = appointmentService.get(appointmentId)
         render Utente.get(appointment1.utenteId) as JSON
     }
+
+    def searchAppointmentsByClinicAndDates(Long id){
+
+        Date currentDate = Utilities.getCurrentDate();
+        Date startDate= Utilities.getDateOfPreviousDays(currentDate , 15)
+        Date endDate= Utilities.getDateOfForwardDays(currentDate , 30)
+        Clinic clinic = clinicService.get(id)
+       // respond Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)
+        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)) as JSON
+    }
+
+
+
+
 }

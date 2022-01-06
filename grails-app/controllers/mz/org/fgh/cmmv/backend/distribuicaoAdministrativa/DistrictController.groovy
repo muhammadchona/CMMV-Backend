@@ -3,6 +3,9 @@ package mz.org.fgh.cmmv.backend.distribuicaoAdministrativa
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.appointment.Appointment
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -27,14 +30,16 @@ class DistrictController extends RestfulController{
         params.max = Math.min(max ?: 10, 100)
 
        // JSON.use('deep'){
-            render districtService.list(params) as JSON
+      //      render districtService.list(params) as JSON
        // }
+        render JSONSerializer.setObjectListJsonResponse(districtService.list(params)) as JSON
     }
 
     def show(Long id) {
      //   JSON.use('deep'){
-            render districtService.get(id) as JSON
+     //       render districtService.get(id) as JSON
       //  }
+        render JSONSerializer.setJsonObjectResponse(districtService.get(id)) as JSON
     }
 
     @Transactional

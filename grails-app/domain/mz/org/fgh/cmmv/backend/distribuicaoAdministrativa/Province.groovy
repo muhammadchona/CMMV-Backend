@@ -11,7 +11,7 @@ class Province {
     String code
     String description
 
-    @JsonManagedReference
+   // @JsonManagedReference
     static hasMany = [districts: District]
 
     static constraints = {

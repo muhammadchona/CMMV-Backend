@@ -1,10 +1,8 @@
 package mz.org.fgh.cmmv.backend.utente
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonManagedReference
+
 import mz.org.fgh.cmmv.backend.address.Address
+import mz.org.fgh.cmmv.backend.appointment.Appointment
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.docsOrImages.InfoDocsOrImages
 import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
@@ -23,19 +21,20 @@ class Utente {
     String systemNumber
 
     String status
+    String syncStatus
 
-    @JsonBackReference
+   // @JsonBackReference
     CommunityMobilizer communityMobilizer
 
-    @JsonIgnore
+   // @JsonIgnore
     UserLogin user
 
     boolean haspartner
 
-    @JsonManagedReference
+  //  @JsonManagedReference
     static belongsTo = [clinic: Clinic]
 
-    static hasMany = [infoDocsImages: InfoDocsOrImages, address:Address]
+    static hasMany = [infoDocsImages: InfoDocsOrImages, addresses:Address , appointments: Appointment]
 
     static fetchMode = [address: 'eager']
 
@@ -49,6 +48,7 @@ class Utente {
         documentType(nullable: true, blank: true)
         documentNumber(nullable: true, blank: true)
         systemNumber(nullable: true, blank: true    )
+        syncStatus(nullable: false, blank: false )
         preferedLanguage(nullable: true)
         infoDocsImages(nullable: true)
         communityMobilizer(nullable: true)

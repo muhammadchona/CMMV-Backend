@@ -55,9 +55,9 @@ class UtenteController extends RestfulController{
 
     def search(String systemNumber){
         System.println("Passa por aqui "+systemNumber)
-        JSON.use('deep'){
+       // JSON.use('deep'){
             render Utente.findBySystemNumber(systemNumber) as JSON
-        }
+      //  }
     }
 
     @Transactional
@@ -84,7 +84,7 @@ class UtenteController extends RestfulController{
 
             //     String messaging = "Muito Obrigado por ter se cadastrado na Aplicação de circuncisão masculina. O seu codigo de utente é:"+""+utente.getSystemNumber();
 
-            String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
+         /*   String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
 
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
             messageService.save(message);
@@ -93,7 +93,7 @@ class UtenteController extends RestfulController{
             //    smsService.send(map)
             Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
                     new PhoneNumber(twilioPhoneNumber),
-                    messaging).create();
+                    messaging).create();*/
         } catch (ValidationException e) {
             respond utente.errors
             return
@@ -115,6 +115,7 @@ class UtenteController extends RestfulController{
         }
 
         try {
+            utente.setSystemNumber(utente.getFirstNames().substring(0,1)+utente.getLastNames().substring(0,1)+"-"+utente.getCellNumber())
             utenteService.save(utente)
         } catch (ValidationException e) {
             respond utente.errors
@@ -152,7 +153,6 @@ class UtenteController extends RestfulController{
 
         println(utenteService.getAllByMobilizerId(communityMobilizerId) as JSON)
         render JSONSerializer.setJsonObjectResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
-
 
         //JSON.use('deep') {
         //    render utenteService.getAllByMobilizerId(communityMobilizerId) as JSON

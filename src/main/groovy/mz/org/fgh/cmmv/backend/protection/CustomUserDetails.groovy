@@ -1,6 +1,8 @@
 package mz.org.fgh.cmmv.backend.protection
 
 import grails.plugin.springsecurity.userdetails.GrailsUser
+import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
 import org.springframework.security.core.GrantedAuthority
 
 class CustomUserDetails extends GrailsUser {

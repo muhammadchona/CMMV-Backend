@@ -12,8 +12,8 @@ class District {
     String description
   //  @JsonBackReference
   //  Province province
-    @JsonBackReference
-    Province province
+  //  @JsonBackReference
+  //  Province province
 
 
     static hasMany = [addresses: Address, mobilizers: CommunityMobilizer]
