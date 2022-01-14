@@ -48,7 +48,7 @@ class Utente {
         documentType(nullable: true, blank: true)
         documentNumber(nullable: true, blank: true)
         systemNumber(nullable: true, blank: true    )
-        syncStatus(nullable: false, blank: false )
+        syncStatus(nullable: true)
         preferedLanguage(nullable: true)
         infoDocsImages(nullable: true)
         communityMobilizer(nullable: true)
@@ -56,3 +56,4 @@ class Utente {
         user(nullable: true)
     }
 }
+

@@ -135,15 +135,15 @@ class UtenteController extends RestfulController{
         render status: NO_CONTENT
     }
 
-    def updateUtentes (List<Utente> users) {
-        try {
-            Utente.list()
-        } catch (ValidationException e) {
-            respond users.errors
-            return
-        }
-        respond users, [status: OK, view:"show"]
-    }
+//    def updateUtentes (List<Utente> users) {
+//        try {
+//            Utente.list()
+//        } catch (ValidationException e) {
+//            respond users.errors
+//            return
+//        }
+//        respond users, [status: OK, view:"show"]
+//    }
 
     def searchByClinicId(Long id){
         Clinic clinic = clinicService.get(id)
