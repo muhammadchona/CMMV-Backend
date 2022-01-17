@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.clinic
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -19,21 +21,15 @@ class ClinicController extends RestfulController{
 
     ClinicController() {
         super(Clinic)
-    }   
+    }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        println('Index_Clinic')
-
-        JSON.use('deep'){
-            render clinicService.list(params) as JSON
-        }
+        render JSONSerializer.setObjectListJsonResponse(clinicService.list(params)) as JSON
     }
 
     def show(Long id) {
-        JSON.use('deep'){
-            render clinicService.get(id) as JSON
-        }
+        render JSONSerializer.setJsonObjectResponse(clinicService.get(id)) as JSON
     }
 
 

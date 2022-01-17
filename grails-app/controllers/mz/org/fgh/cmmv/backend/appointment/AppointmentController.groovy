@@ -31,18 +31,18 @@ class AppointmentController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-            render appointmentService.list(params) as JSON
+        render JSONSerializer.setObjectListJsonResponse(appointmentService.list(params)) as JSON
     }
 
     def getAllOfUtente(Long utenteId) {
         params.max = Math.min(max ?: 10, 100)
         Utente utente
         utente.setId(utenteId)
-            render Appointment.findAllByUtente(utente) as JSON
+        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByUtente(utente)) as JSON
     }
 
     def show(Long id) {
-            render appointmentService.get(id) as JSON
+        render JSONSerializer.setJsonObjectResponse(appointmentService.get(id)) as JSON
     }
 
     @Transactional
@@ -110,25 +110,21 @@ class AppointmentController extends RestfulController{
 
     // Retornar as consultas duma determinada clinic/US
     def searcAppointmentsByClinicId(Long id){
-        //JSON.use('deep'){
         Clinic clinic = clinicService.get(id)
-        render Appointment.findAllByClinic(clinic) as JSON
-        //}
+        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinic(clinic)) as JSON
     }
 
     // Retornar o utente da consulta
     def getUtenteForAppointment(Long appointmentId){
         Appointment appointment1 = appointmentService.get(appointmentId)
-        render Utente.get(appointment1.utenteId) as JSON
+        render JSONSerializer.setJsonObjectResponse(Utente.get(appointment1.utenteId)) as JSON
     }
 
     def searchAppointmentsByClinicAndDates(Long id){
-
-        Date currentDate = Utilities.getCurrentDate();
-        Date startDate= Utilities.getDateOfPreviousDays(currentDate , 15)
-        Date endDate= Utilities.getDateOfForwardDays(currentDate , 30)
+        Date currentDate = Utilities.getCurrentDate()
+        Date startDate= Utilities.getDateOfPreviousDays(currentDate , 90)
+        Date endDate= Utilities.getDateOfForwardDays(currentDate , 90)
         Clinic clinic = clinicService.get(id)
-       // respond Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)
         render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)) as JSON
     }
 

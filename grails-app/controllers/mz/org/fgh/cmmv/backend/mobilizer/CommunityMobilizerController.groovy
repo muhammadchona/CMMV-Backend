@@ -10,6 +10,7 @@ import mz.org.fgh.cmmv.backend.protection.SecUser
 import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
 import mz.org.fgh.cmmv.backend.protection.SecUserService
 import mz.org.fgh.cmmv.backend.userLogin.MobilizerLogin
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -34,27 +35,11 @@ class CommunityMobilizerController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-        //     JSON.use('deep'){
-        render communityMobilizerService.list(params) as JSON
-        //    }
+        render JSONSerializer.setObjectListJsonResponse(communityMobilizerService.list(params)) as JSON
     }
 
     def show(Long id) {
-        //      CommunityMobilizer communityMobilizer = communityMobilizerService.get(id)
-        //  List<Utente> utentes = Utente.findAllByCommunityMobilizer(communityMobilizerService.get(id))
-        //    communityMobilizer.setUtentes(utentes)
-        //    JSON.use('deep'){
-        respond communityMobilizerService.get(id)
-        // }
-        //    for (Utente utente : communityMobilizer.getUtentes()) {
-        //        utente.getAddress().getAt(0).setDistrict(null)
-        //      utente.getAddress().getAt(0).setUtente(null)
-        //     utente.setMobilizer(null)
-        //    visitDetails.getEpisode().setPatientVisitDetails(null)
-        //    visitDetails.getEpisode().setPatientServiceIdentifier(null)
-        //    }
-        // render Utilities.parseToJSON(communityMobilizer)
+        render JSONSerializer.setJsonObjectResponse(communityMobilizerService.get(id)) as JSON
     }
 
     @Transactional

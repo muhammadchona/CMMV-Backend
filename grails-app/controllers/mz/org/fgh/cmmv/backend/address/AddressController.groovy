@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.address
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -25,11 +27,11 @@ class AddressController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-            render addressService.list(params) as JSON
+        render JSONSerializer.setObjectListJsonResponse(addressService.list(params)) as JSON
     }
 
     def show(Long id) {
-            render addressService.get(id) as JSON
+        render JSONSerializer.setJsonObjectResponse(addressService.get(id)) as JSON
     }
 
     @Transactional

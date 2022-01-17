@@ -41,23 +41,16 @@ class UtenteController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
+        render JSONSerializer.setObjectListJsonResponse(utenteService.list(params)) as JSON
 
-        //     JSON.use('deep'){
-        respond utenteService.list(params)
-        //    }
     }
 
     def show(Long id) {
-        //      JSON.use('deep'){
-        respond utenteService.get(id)
-        //      }
+        render JSONSerializer.setJsonObjectResponse(utenteService.get(id)) as JSON
     }
 
     def search(String systemNumber){
-        System.println("Passa por aqui "+systemNumber)
-       // JSON.use('deep'){
-            render Utente.findBySystemNumber(systemNumber) as JSON
-      //  }
+            render JSONSerializer.setJsonObjectResponse(Utente.findBySystemNumber(systemNumber)) as JSON
     }
 
     @Transactional
@@ -135,29 +128,12 @@ class UtenteController extends RestfulController{
         render status: NO_CONTENT
     }
 
-//    def updateUtentes (List<Utente> users) {
-//        try {
-//            Utente.list()
-//        } catch (ValidationException e) {
-//            respond users.errors
-//            return
-//        }
-//        respond users, [status: OK, view:"show"]
-//    }
-
     def searchByClinicId(Long id){
         Clinic clinic = clinicService.get(id)
-        render JSONSerializer.setJsonObjectResponse(Utente.findAllByClinic(clinic)) as JSON
+        render JSONSerializer.setObjectListJsonResponse(Utente.findAllByClinic(clinic)) as JSON
     }
     def searchByMobilizerId(Long communityMobilizerId){
-
-        println(utenteService.getAllByMobilizerId(communityMobilizerId) as JSON)
-        render JSONSerializer.setJsonObjectResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
-
-        //JSON.use('deep') {
-        //    render utenteService.getAllByMobilizerId(communityMobilizerId) as JSON
-        // }
-        //   render utenteService.getAllByMobilizerId(communityMobilizerId) as GSON
+        render JSONSerializer.setObjectListJsonResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
     }
 
     def searchClinicByUtente(Long utenteId){
