@@ -119,12 +119,12 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: root
 
 environments:
     development:
         dataSource:
-            dbCreate:  update
+            dbCreate: update
             url: jdbc:postgresql://localhost:5432/cmmv
     test:
         dataSource:

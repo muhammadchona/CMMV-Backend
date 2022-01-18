@@ -23,6 +23,8 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
         def mainEntityAssociated = ''
         def secUser = null
         def source = ''
+        def clinicId = null
+        def districtId = null
 
         SecUser.withTransaction {
             secUser = SecUser.get(accessToken.principal.id)
@@ -31,7 +33,8 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
 
         MobilizerLogin.withTransaction {
             if(MobilizerLogin.get(secUser.id)?.mobilizer?.id != null) {
-                mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.id
+                mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.district.id
+                districtId = mainEntityAssociated
                 source = 'Mobilizer'
             }
         }
@@ -39,6 +42,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
         UserLogin.withTransaction {
             if(UserLogin.get(secUser.id)?.clinic?.id != null) {
                 mainEntityAssociated = UserLogin.get(secUser.id).clinic.id
+                clinicId = mainEntityAssociated
                 source = 'Clinic'
             }
         }
@@ -79,10 +83,12 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 access_token : accessToken.accessToken,
                 token_type   : "Bearer",
                 refresh_token: accessToken.refreshToken,
-                password : secUser.password,
+                password     : secUser.password,
                 roles        : accessToken.authorities.collect { GrantedAuthority role -> role.authority },
                 mainEntity   : mainEntityAssociated,
-                source       : source,
+                clinicId     : clinicId,
+                districtId   : districtId,
+                source       : source
 
         ]
 

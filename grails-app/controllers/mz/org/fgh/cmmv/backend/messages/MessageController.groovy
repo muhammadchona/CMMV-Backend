@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.messages
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -25,16 +27,11 @@ class MessageController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-        JSON.use('deep'){
-            render messageService.list(params) as JSON
-        }
+        render JSONSerializer.setObjectListJsonResponse(messageService.list(params)) as JSON
     }
 
     def show(Long id) {
-        JSON.use('deep'){
-            render messageService.get(id) as JSON
-        }
+        render JSONSerializer.setJsonObjectResponse( messageService.get(id)) as JSON
     }
 
     @Transactional

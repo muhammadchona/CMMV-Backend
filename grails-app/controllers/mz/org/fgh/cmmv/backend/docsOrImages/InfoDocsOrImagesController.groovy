@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.docsOrImages
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -25,16 +27,11 @@ class InfoDocsOrImagesController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-        JSON.use('deep'){
-            render infoDocsOrImagesService.list(params) as JSON
-        }
+        render JSONSerializer.setObjectListJsonResponse(infoDocsOrImagesService.list(params)) as JSON
     }
 
     def show(Long id) {
-        JSON.use('deep'){
-            render infoDocsOrImagesService.get(id) as JSON
-        }
+        render JSONSerializer.setJsonObjectResponse(infoDocsOrImagesService.get(id)) as JSON
     }
 
     @Transactional

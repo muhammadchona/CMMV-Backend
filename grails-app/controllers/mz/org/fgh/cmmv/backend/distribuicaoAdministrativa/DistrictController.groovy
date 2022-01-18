@@ -28,17 +28,10 @@ class DistrictController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-
-       // JSON.use('deep'){
-      //      render districtService.list(params) as JSON
-       // }
         render JSONSerializer.setObjectListJsonResponse(districtService.list(params)) as JSON
     }
 
     def show(Long id) {
-     //   JSON.use('deep'){
-     //       render districtService.get(id) as JSON
-      //  }
         render JSONSerializer.setJsonObjectResponse(districtService.get(id)) as JSON
     }
 

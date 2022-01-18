@@ -15,6 +15,7 @@ import mz.org.fgh.cmmv.backend.protection.SecRole
 import mz.org.fgh.cmmv.backend.protection.SecUser
 import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
 import mz.org.fgh.cmmv.backend.userLogin.MobilizerLogin
+import mz.org.fgh.cmmv.backend.userLogin.MobilizerLoginService
 import mz.org.fgh.cmmv.backend.userLogin.UserLogin
 
 import javax.persistence.EntityNotFoundException
@@ -24,7 +25,8 @@ class BootStrap {
     public static final String ACCOUNT_SID = "ACb782cd08cd384f29538e90d6a88d8939";
     public static final String AUTH_TOKEN = "b7a856b44c9af30cc95837943ab0d47c";
 
-    TwilioDetailService twilioDetailService;
+    TwilioDetailService twilioDetailService
+    MobilizerLoginService mobilizerLoginService
 
     def init = { servletContext ->
         addInitialUsers()
