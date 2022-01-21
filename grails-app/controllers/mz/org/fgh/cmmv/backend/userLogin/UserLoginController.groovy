@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.userLogin
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.protection.SecRole
+import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -36,6 +38,7 @@ class UserLoginController extends RestfulController{
 
     @Transactional
     def save(UserLogin userLogin) {
+        SecRole secRole = SecRole.findByAuthority('ROLE_USER')
         if (userLogin == null) {
             render status: NOT_FOUND
             return
@@ -48,6 +51,7 @@ class UserLoginController extends RestfulController{
 
         try {
             userLoginService.save(userLogin)
+            SecUserSecRole.create userLogin, secRole
         } catch (ValidationException e) {
             respond userLogin.errors
             return
