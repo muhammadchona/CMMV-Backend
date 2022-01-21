@@ -33,8 +33,8 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
 
         MobilizerLogin.withTransaction {
             if(MobilizerLogin.get(secUser.id)?.mobilizer?.id != null) {
-                mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.district.id
-                districtId = mainEntityAssociated
+                mainEntityAssociated = MobilizerLogin.get(secUser.id).mobilizer.id
+                districtId = MobilizerLogin.get(secUser.id).mobilizer.district.id
                 source = 'Mobilizer'
             }
         }
