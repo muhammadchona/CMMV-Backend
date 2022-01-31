@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.rest.token.AccessToken
 import grails.plugin.springsecurity.rest.token.rendering.AccessTokenJsonRenderer
 import groovy.json.JsonBuilder
+import mz.org.fgh.cmmv.backend.userLogin.DistrictUserLogin
 import mz.org.fgh.cmmv.backend.userLogin.MobilizerLogin
 import mz.org.fgh.cmmv.backend.userLogin.UserLogin
 import mz.org.fgh.cmmv.backend.userLogin.UtenteLogin
@@ -25,6 +26,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
         def source = ''
         def clinicId = null
         def districtId = null
+        def provinceId = null
 
         SecUser.withTransaction {
             secUser = SecUser.get(accessToken.principal.id)
@@ -50,6 +52,14 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
             if(UtenteLogin.get(secUser.id)?.utente?.id != null) {
                 mainEntityAssociated = UtenteLogin.get(secUser.id).utente.id
                 source = 'Utente'
+            }
+        }
+
+        DistrictUserLogin.withTransaction {
+            if(DistrictUserLogin.get(secUser.id)?.district?.id != null) {
+                mainEntityAssociated = DistrictUserLogin.get(secUser.id).district.id
+                provinceId = DistrictUserLogin.get(secUser.id).province.id
+                source = 'District'
             }
         }
         /*
@@ -88,6 +98,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 mainEntity   : mainEntityAssociated,
                 clinicId     : clinicId,
                 districtId   : districtId,
+                provinceId   : provinceId,
                 source       : source
 
         ]

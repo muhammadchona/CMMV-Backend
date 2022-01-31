@@ -3,6 +3,8 @@ package mz.org.fgh.cmmv.backend.clinic
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
+import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -89,5 +91,11 @@ class ClinicController extends RestfulController{
 
     def search(double latitude) {
         respond clinicService.searchByDistance(-25.814740,32.561956,50)
+    }
+
+    def searchClinicsByDistrictId(Long districtId){
+        District district = District.findById(districtId)
+        render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrict(district)) as JSON
+        // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }

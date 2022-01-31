@@ -1,11 +1,9 @@
 package mz.org.fgh.cmmv.backend.userLogin
 
 import grails.converters.JSON
-import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
-import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.protection.SecRole
 import mz.org.fgh.cmmv.backend.protection.SecUserSecRole
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
@@ -19,75 +17,72 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-class UserLoginController extends RestfulController{
+@ReadOnly
+class DistrictUserLoginController {
 
-    UserLoginService userLoginService
+    DistrictUserLoginService districtUserLoginService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    UserLoginController() {
-        super(UserLogin)
-    }
-
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        render JSONSerializer.setObjectListJsonResponse(userLoginService.list(params)) as JSON
+        respond districtUserLoginService.list(params), model:[districtUserLoginCount: districtUserLoginService.count()]
     }
 
     def show(Long id) {
-        render JSONSerializer.setJsonObjectResponse(userLoginService.get(id)) as JSON
+        respond districtUserLoginService.get(id)
     }
 
     @Transactional
-    def save(UserLogin userLogin) {
-        SecRole secRole = SecRole.findByAuthority('ROLE_USER')
-        if (userLogin == null) {
+    def save(DistrictUserLogin districtUserLogin) {
+        SecRole secRole = SecRole.findByAuthority('ROLE_DISTRICT')
+        if (districtUserLogin == null) {
             render status: NOT_FOUND
             return
         }
-        if (userLogin.hasErrors()) {
+        if (districtUserLogin.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond userLogin.errors
+            respond districtUserLogin.errors
             return
         }
 
         try {
-            userLoginService.save(userLogin)
-            SecUserSecRole.create userLogin, secRole
+            districtUserLoginService.save(districtUserLogin)
+            SecUserSecRole.create districtUserLogin, secRole
         } catch (ValidationException e) {
-            respond userLogin.errors
+            respond districtUserLogin.errors
             return
         }
 
-        respond userLogin, [status: CREATED, view:"show"]
+        respond districtUserLogin, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(UserLogin userLogin) {
-        if (userLogin == null) {
+    def update(DistrictUserLogin districtUserLogin) {
+        if (districtUserLogin == null) {
             render status: NOT_FOUND
             return
         }
-        if (userLogin.hasErrors()) {
+        if (districtUserLogin.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond userLogin.errors
+            respond districtUserLogin.errors
             return
         }
 
         try {
-            userLoginService.save(userLogin)
+            districtUserLoginService.save(districtUserLogin)
         } catch (ValidationException e) {
-            respond userLogin.errors
+            respond districtUserLogin.errors
             return
         }
 
-        respond userLogin, [status: OK, view:"show"]
+        respond districtUserLogin, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || userLoginService.delete(id) == null) {
+        if (id == null || districtUserLoginService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }
@@ -95,9 +90,9 @@ class UserLoginController extends RestfulController{
         render status: NO_CONTENT
     }
 
-    def searchAllUsersByClinicId(Long clinicId){
-        Clinic clinic = Clinic.findById(clinicId)
-        render JSONSerializer.setObjectListJsonResponse(UserLogin.findAllByClinic(clinic)) as JSON
+    def searchAllUsersByDistrictId(Long districtId){
+        District district = District.findById(districtId)
+        render JSONSerializer.setObjectListJsonResponse(DistrictUserLogin.findAllByDistrict(district)) as JSON
         // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }

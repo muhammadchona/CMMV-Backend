@@ -3,6 +3,7 @@ package mz.org.fgh.cmmv.backend.mobilizer
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.protection.ISecRoleService
 import mz.org.fgh.cmmv.backend.protection.SecRole
 import mz.org.fgh.cmmv.backend.protection.SecRoleController
@@ -108,7 +109,8 @@ class CommunityMobilizerController extends RestfulController{
     }
 
     def searchByDistrictId(Long districtId){
-
-        respond communityMobilizerService.getAllByDistrictId(districtId)
+        District district = District.findById(districtId)
+        render JSONSerializer.setObjectListJsonResponse(CommunityMobilizer.findAllByDistrict(district)) as JSON
+       // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }
