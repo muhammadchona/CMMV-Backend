@@ -19,7 +19,7 @@ class Utente {
     String documentType
     String documentNumber
     String systemNumber
-
+    Date registerDate
     String status
     String syncStatus
 
@@ -44,7 +44,7 @@ class Utente {
             return birthDate != null ? birthDate <= new Date() : null
         })
         cellNumber(nullable: false, matches: /\d+/, maxSize: 12, minSize: 9)
-        whatsappNumber(nullable: false, matches: /\d+/, maxSize: 12, minSize: 9)
+        whatsappNumber(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         documentType(nullable: true, blank: true)
         documentNumber(nullable: true, blank: true)
         systemNumber(nullable: true, blank: true, unique: true)

@@ -45,6 +45,7 @@ class BootStrap {
         def adminRole = new SecRole('ROLE_ADMIN').save()
         def userRole = new SecRole('ROLE_USER').save()
         def mobilizerRole = new SecRole('ROLE_MOBILIZER').save()
+        def districtRole = new SecRole('ROLE_USER_DISTRICT').save()
 
         def testUser = new SecUser('user', 'password','user').save()
         def adminUser = new SecUser('admin', 'admin','admin').save()

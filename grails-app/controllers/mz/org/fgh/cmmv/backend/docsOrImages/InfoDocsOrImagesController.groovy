@@ -4,6 +4,11 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+import org.apache.http.client.entity.GzipCompressingEntity
+
+import java.nio.charset.Charset
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -27,7 +32,10 @@ class InfoDocsOrImagesController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        render JSONSerializer.setObjectListJsonResponse(infoDocsOrImagesService.list(params)) as JSON
+
+        List<InfoDocsOrImages> docs = InfoDocsOrImages.list(params)?.collect{
+            [id:it.id,title: it.title , forMobilizer: it.forMobilizer]}
+      render docs as JSON
     }
 
     def show(Long id) {
@@ -36,6 +44,9 @@ class InfoDocsOrImagesController extends RestfulController{
 
     @Transactional
     def save(InfoDocsOrImages infoDocsOrImages) {
+
+        infoDocsOrImages.setCreatedDate(new Date())
+        infoDocsOrImages.setPublishedDate(new Date())
         if (infoDocsOrImages == null) {
             render status: NOT_FOUND
             return
