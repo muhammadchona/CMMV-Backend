@@ -19,7 +19,7 @@ class Utente {
     String documentType
     String documentNumber
     String systemNumber
-
+    Date registerDate
     String status
     String syncStatus
 
