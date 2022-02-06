@@ -3,8 +3,10 @@ package mz.org.fgh.cmmv.backend.utente
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
+import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.messages.MessageService
 import mz.org.fgh.cmmv.backend.mobilizer.ICommunityMobilizerService
 import mz.org.fgh.cmmv.backend.*
@@ -145,6 +147,17 @@ class UtenteController extends RestfulController{
         def utente = utenteService.get(utenteId)
         println(utente.address as JSON)
         render utente.address as JSON
+    }
+
+    def searchByAddressDistrictId(Long districtId){
+       District district = District.findById(districtId)
+        List<Address> addresses = Address.findAllByDistrict(district)
+        Set<Utente> utentes = new HashSet<>()
+        for (Address address : addresses) {
+            utentes.add(address.getUtente())
+        }
+        List<Utente> utentesList = new ArrayList<>(utentes);
+        render JSONSerializer.setObjectListJsonResponse(utentesList) as JSON
     }
 
     private mz.org.fgh.cmmv.backend.messages.Message buildMessage(Utente utente,String sms) {

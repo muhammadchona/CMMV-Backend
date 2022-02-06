@@ -36,7 +36,7 @@ class DistrictUserLoginController {
 
     @Transactional
     def save(DistrictUserLogin districtUserLogin) {
-        SecRole secRole = SecRole.findByAuthority('ROLE_DISTRICT')
+        SecRole secRole = SecRole.findByAuthority('ROLE_USER_DISTRICT')
         if (districtUserLogin == null) {
             render status: NOT_FOUND
             return
