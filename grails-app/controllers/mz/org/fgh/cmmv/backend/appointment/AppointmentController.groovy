@@ -3,8 +3,10 @@ package mz.org.fgh.cmmv.backend.appointment
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
+import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.utente.Utente
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import mz.org.fgh.cmmv.backend.utilities.Utilities
@@ -128,6 +130,12 @@ class AppointmentController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)) as JSON
     }
 
+    def searchAppointmentsByClinicDistrictId(Long districtId){
+        District district = District.findById(districtId)
+        List<Clinic> clinics = Clinic.findAllByDistrict(district)
+        List<Appointment> appointments = Appointment.findAllByClinicInList(clinics)
+        render JSONSerializer.setObjectListJsonResponse(appointments) as JSON
+    }
 
 
 
