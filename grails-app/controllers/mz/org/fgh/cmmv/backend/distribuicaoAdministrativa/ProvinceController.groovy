@@ -4,7 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
-import sun.misc.Resource
+//import sun.misc.Resource
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
