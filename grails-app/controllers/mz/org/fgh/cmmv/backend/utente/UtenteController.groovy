@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class UtenteController extends RestfulController{
+class UtenteController extends RestfulController {
 
     IUtenteService utenteService
     ClinicService clinicService
@@ -34,7 +34,7 @@ class UtenteController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    String codePrefixMz ="+258"
+    String codePrefixMz = "+258"
     String twilioPhoneNumber = "+12055486394"
 
     UtenteController() {
@@ -51,8 +51,16 @@ class UtenteController extends RestfulController{
         render JSONSerializer.setJsonObjectResponse(utenteService.get(id)) as JSON
     }
 
-    def search(String systemNumber){
-            render JSONSerializer.setJsonObjectResponse(Utente.findBySystemNumber(systemNumber)) as JSON
+    def search(String systemNumber) {
+        Utente utente = Utente.findBySystemNumber(systemNumber);
+        if (utente != null) {
+            render JSONSerializer.setJsonObjectResponse(utente) as JSON
+        } else {
+            render status: NOT_FOUND
+            return
+        }
+
+
     }
 
     @Transactional
@@ -72,29 +80,29 @@ class UtenteController extends RestfulController{
 //            utente.getUser().setUsername(utente.getFirstNames())
             //      utente.getUser().setPassword(utente.getLastNames())
             //     utente.getUser().setUtente(utente)
-            utente.setSystemNumber(utente.getFirstNames().substring(0,1)+utente.getLastNames().substring(0,1)+"-"+utente.getCellNumber())
+            utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
             utenteService.save(utente)
             /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
               System.out.println(message.getSid());*/
 
             //     String messaging = "Muito Obrigado por ter se cadastrado na Aplicação de circuncisão masculina. O seu codigo de utente é:"+""+utente.getSystemNumber();
 
-         /*   String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
+            /*   String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
 
-            mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
-            messageService.save(message);
+               mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
+               messageService.save(message);
 
-            //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
-            //    smsService.send(map)
-            Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
-                    new PhoneNumber(twilioPhoneNumber),
-                    messaging).create();*/
+               //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
+               //    smsService.send(map)
+               Message.creator(new PhoneNumber(codePrefixMz+utente.getCellNumber()),
+                       new PhoneNumber(twilioPhoneNumber),
+                       messaging).create();*/
         } catch (ValidationException e) {
             respond utente.errors
             return
         }
 
-        respond utente, [status: CREATED, view:"show"]
+        respond utente, [status: CREATED, view: "show"]
     }
 
     @Transactional
@@ -110,14 +118,14 @@ class UtenteController extends RestfulController{
         }
 
         try {
-            utente.setSystemNumber(utente.getFirstNames().substring(0,1)+utente.getLastNames().substring(0,1)+"-"+utente.getCellNumber())
+            utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
             utenteService.save(utente)
         } catch (ValidationException e) {
             respond utente.errors
             return
         }
 
-        respond utente, [status: OK, view:"show"]
+        respond utente, [status: OK, view: "show"]
     }
 
     @Transactional
@@ -130,27 +138,29 @@ class UtenteController extends RestfulController{
         render status: NO_CONTENT
     }
 
-    def searchByClinicId(Long id){
+    def searchByClinicId(Long id) {
         Clinic clinic = clinicService.get(id)
         render JSONSerializer.setObjectListJsonResponse(Utente.findAllByClinic(clinic)) as JSON
     }
-    def searchByMobilizerId(Long communityMobilizerId){
+
+    def searchByMobilizerId(Long communityMobilizerId) {
         render JSONSerializer.setObjectListJsonResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
     }
 
-    def searchClinicByUtente(Long utenteId){
+    def searchClinicByUtente(Long utenteId) {
         def utente = utenteService.get(utenteId)
         println(utente?.clinic as JSON)
         render 'utente?.clinic as JSON'
     }
-    def searchAddressesForUtente(Long utenteId){
+
+    def searchAddressesForUtente(Long utenteId) {
         def utente = utenteService.get(utenteId)
         println(utente.address as JSON)
         render utente.address as JSON
     }
 
-    def searchByAddressDistrictId(Long districtId){
-       District district = District.findById(districtId)
+    def searchByAddressDistrictId(Long districtId) {
+        District district = District.findById(districtId)
         List<Address> addresses = Address.findAllByDistrict(district)
         Set<Utente> utentes = new HashSet<>()
         for (Address address : addresses) {
@@ -160,7 +170,7 @@ class UtenteController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(utentesList) as JSON
     }
 
-    private mz.org.fgh.cmmv.backend.messages.Message buildMessage(Utente utente,String sms) {
+    private mz.org.fgh.cmmv.backend.messages.Message buildMessage(Utente utente, String sms) {
         mz.org.fgh.cmmv.backend.messages.Message message = new mz.org.fgh.cmmv.backend.messages.Message();
         message.setUser(utente);
         message.setDescription(sms);

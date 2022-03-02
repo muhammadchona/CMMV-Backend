@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.OK
 import org.apache.commons.lang3.time.DateUtils;
 import grails.gorm.transactions.Transactional
 
-class AppointmentController extends RestfulController{
+class AppointmentController extends RestfulController {
 
     AppointmentService appointmentService
     ClinicService clinicService
@@ -60,7 +60,7 @@ class AppointmentController extends RestfulController{
         }
 
         try {
-            if (appointment.getId() <= 0){
+            if (appointment.getId() <= 0) {
 
                 Collection<Appointment> dbappointments = Appointment.findAllByAppointmentDate(appointment.getAppointmentDate())
                 if (dbappointments != null && dbappointments.size() > 0) {
@@ -75,7 +75,7 @@ class AppointmentController extends RestfulController{
             return
         }
 
-        respond appointment, [status: CREATED, view:"show"]
+        respond appointment, [status: CREATED, view: "show"]
     }
 
     @Transactional
@@ -97,7 +97,7 @@ class AppointmentController extends RestfulController{
             return
         }
 
-        respond appointment, [status: OK, view:"show"]
+        respond appointment, [status: OK, view: "show"]
     }
 
     @Transactional
@@ -111,32 +111,43 @@ class AppointmentController extends RestfulController{
     }
 
     // Retornar as consultas duma determinada clinic/US
-    def searcAppointmentsByClinicId(Long id){
+    def searcAppointmentsByClinicId(Long id) {
         Clinic clinic = clinicService.get(id)
         render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinic(clinic)) as JSON
     }
 
     // Retornar o utente da consulta
-    def getUtenteForAppointment(Long appointmentId){
+    def getUtenteForAppointment(Long appointmentId) {
         Appointment appointment1 = appointmentService.get(appointmentId)
         render JSONSerializer.setJsonObjectResponse(Utente.get(appointment1.utenteId)) as JSON
     }
 
-    def searchAppointmentsByClinicAndDates(Long id){
+    def searchAppointmentsByClinicAndDates(Long id) {
         Date currentDate = Utilities.getCurrentDate()
-        Date startDate= Utilities.getDateOfPreviousDays(currentDate , 90)
-        Date endDate= Utilities.getDateOfForwardDays(currentDate , 90)
+        Date startDate = Utilities.getDateOfPreviousDays(currentDate, 90)
+        Date endDate = Utilities.getDateOfForwardDays(currentDate, 90)
         Clinic clinic = clinicService.get(id)
-        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic,startDate,endDate)) as JSON
+        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic, startDate, endDate)) as JSON
     }
 
-    def searchAppointmentsByClinicDistrictId(Long districtId){
+    def searchAppointmentsByClinicDistrictId(Long districtId) {
         District district = District.findById(districtId)
         List<Clinic> clinics = Clinic.findAllByDistrict(district)
         List<Appointment> appointments = Appointment.findAllByClinicInList(clinics)
         render JSONSerializer.setObjectListJsonResponse(appointments) as JSON
     }
 
+
+    def searchAppointmentsByUtenteId(Long utenteId) {
+        Utente utente = Utente.findById(utenteId)
+        Appointment appointments = Appointment.findByUtente(utente)
+        if (appointments != null) {
+            render JSONSerializer.setJsonObjectResponse(appointments) as JSON
+        } else {
+            render status: NOT_FOUND
+            return
+        }
+    }
 
 
 }

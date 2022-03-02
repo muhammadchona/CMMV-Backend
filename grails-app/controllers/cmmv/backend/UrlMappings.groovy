@@ -11,7 +11,7 @@ class UrlMappings {
         patch "/api/$controller/$id(.$format)?"(action:"patch")
        // patch "/api/secUser/$id(.$format)?"(controller:'secUser', action:'changePassword')
         // add mapping for Utente search by param systemNumber clinjc and appointment
-        get "/api/utente/$systemNumber(.$format)?"(controller:'utente', action:'search')
+        get "/api/utente/search/$systemNumber(.$format)?"(controller:'utente', action:'search')
         get "/api/utente/clinic/$id(.$format)?"(controller:'utente', action:'searchByClinicId')
 
         get "/api/clinic/utente/$utenteId(.$format)?"(controller:'utente', action:'searchClinicByUtente')
@@ -19,6 +19,7 @@ class UrlMappings {
 
         get "/api/appointment/clinic/$id(.$format)?"(controller:'appointment', action:'searcAppointmentsByClinicId')
         get "/api/utente/appointment/$appointmentId(.$format)?"(controller:'appointment', action:'searcAppointmentsByClinicId')
+        get "/api/appointment/search/$utenteId(.$format)?"(controller:'appointment', action:'searchAppointmentsByUtenteId')
 
         get "/api/utente/communityMobilizer/$communityMobilizerId(.$format)?"(controller:'utente', action:'searchByMobilizerId')
         get "/api/communityMobilizer/district/$districtId(.$format)?"(controller:'communityMobilizer', action:'searchByDistrictId')
