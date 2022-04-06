@@ -8,6 +8,8 @@ import groovy.sql.Sql
 import com.twilio.Twilio
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.Province
+import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetails
+import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
 import mz.org.fgh.cmmv.backend.messages.TwilioDetail
 import mz.org.fgh.cmmv.backend.messages.TwilioDetailService
 import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer;
@@ -22,17 +24,17 @@ import javax.persistence.EntityNotFoundException
 
 class BootStrap {
 
-    public static final String ACCOUNT_SID = "ACb782cd08cd384f29538e90d6a88d8939";
-    public static final String AUTH_TOKEN = "b7a856b44c9af30cc95837943ab0d47c";
+    public static final String REST_API_URL = "http://dev.fgh.org.mz:8180/api/1/webhook"
+    public static final String API_KEY = "60205d65-8824-4f08-b915-ed28cbdd7430"
 
-    TwilioDetailService twilioDetailService
+    FrontlineSmsDetailsService frontlineSmsDetailsService
     MobilizerLoginService mobilizerLoginService
 
     def init = { servletContext ->
         addInitialUsers()
-        addTwilioDetails()
-        def twilioDetails = twilioDetailService.list().get(0)
-        Twilio.init(twilioDetails.getAccountSid(),twilioDetails.getAuthToken());
+        addFrontlineSmsDetails()
+     //   def frontLineSmsDetail = frontlineSmsDetailsService.list().get(0)
+      //  Twilio.init(twilioDetails.getAccountSid(),twilioDetails.getAuthToken());
     }
     def destroy = {
     }
@@ -93,12 +95,12 @@ class BootStrap {
     }
 
     @Transactional
-    void addTwilioDetails(){
+    void addFrontlineSmsDetails(){
 
-         def twilioDetail = twilioDetailService.list()
-         if(twilioDetail.size() <= 0) {
-             def twilio = new TwilioDetail("ACb782cd08cd384f29538e90d6a88d8939","b7a856b44c9af30cc95837943ab0d47c");
-             twilioDetailService.save(twilio)
+         def frontLineSmsDetail = frontlineSmsDetailsService.list()
+         if(frontLineSmsDetail.size() <= 0) {
+             def frontlineSms = new FrontlineSmsDetails(REST_API_URL,API_KEY);
+             frontlineSmsDetailsService.save(frontlineSms)
          }
 
     }
