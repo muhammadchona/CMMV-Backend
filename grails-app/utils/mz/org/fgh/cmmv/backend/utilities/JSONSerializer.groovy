@@ -22,7 +22,7 @@ class JSONSerializer {
     }
 
     private buildJSON = { obj ->
-        if(obj.apkKey != null) {
+        if(obj.id != null) {
             setProperty("id", obj.id )
         }
         obj.properties.each { propName, propValue ->
