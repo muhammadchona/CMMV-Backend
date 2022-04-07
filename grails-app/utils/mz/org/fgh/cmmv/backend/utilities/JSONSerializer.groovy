@@ -22,7 +22,9 @@ class JSONSerializer {
     }
 
     private buildJSON = { obj ->
-        setProperty("id", obj.id )
+        if(obj.id != null) {
+            setProperty("id", obj.id )
+        }
         obj.properties.each { propName, propValue ->
             if (!['class', 'metaClass'].contains(propName)) {
 

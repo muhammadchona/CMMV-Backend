@@ -3,10 +3,16 @@ package mz.org.fgh.cmmv.backend.utente
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.cmmv.backend.sms.PayloadSms
+import mz.org.cmmv.backend.sms.RecipientSms
+import mz.org.cmmv.backend.sms.RestFrontlineSms
+import mz.org.cmmv.backend.sms.SmsRequest
 import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
+import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetails
+import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
 import mz.org.fgh.cmmv.backend.messages.MessageService
 import mz.org.fgh.cmmv.backend.mobilizer.ICommunityMobilizerService
 import mz.org.fgh.cmmv.backend.*
@@ -15,6 +21,8 @@ import mz.org.fgh.cmmv.backend.*
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
+import mz.org.fgh.cmmv.backend.utilities.Utilities
+import org.grails.web.json.JSONObject
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -30,12 +38,13 @@ class UtenteController extends RestfulController {
     ICommunityMobilizerService communityMobilizerService
     def smsService
     MessageService messageService;
+    FrontlineSmsDetailsService frontlineSmsDetailsService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     String codePrefixMz = "+258"
-    String twilioPhoneNumber = "+12055486394"
+    String defaultMessage= "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina. O seu codigo de utente e:"
 
     UtenteController() {
         super(Utente)
@@ -81,16 +90,19 @@ class UtenteController extends RestfulController {
             //      utente.getUser().setPassword(utente.getLastNames())
             //     utente.getUser().setUtente(utente)
             utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
+            String messaging = defaultMessage+""+utente.getSystemNumber()
+            buildSmsFrontline(utente,messaging)
             utenteService.save(utente)
+            mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
+            messageService.save(message)
             /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
               System.out.println(message.getSid());*/
 
-            //     String messaging = "Muito Obrigado por ter se cadastrado na Aplicação de circuncisão masculina. O seu codigo de utente é:"+""+utente.getSystemNumber();
-
+            //
+         //   mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
             /*   String messaging = "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina.O seu codigo de utente:"+utente.getSystemNumber();
 
-               mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
-               messageService.save(message);
+
 
                //    def map = [to:"+2588444644422",from:"+12055486394",body:messaging]
                //    smsService.send(map)
@@ -178,4 +190,24 @@ class UtenteController extends RestfulController {
         message.setSmsDate(new Date())
         return message;
     }
+
+    private SmsRequest buildSmsFrontline(Utente utente, String sms) {
+        def frontLineSmsDetail = frontlineSmsDetailsService.list().get(0)
+
+        SmsRequest smsRequest = new SmsRequest()
+        PayloadSms payloadSms = new PayloadSms()
+        RecipientSms recipientSMS = new RecipientSms()
+        recipientSMS.setType("mobile")
+        recipientSMS.setValue(codePrefixMz+utente.getCellNumber())
+        payloadSms.setMessage(sms)
+        payloadSms.setRecipients(recipientSMS)
+        smsRequest.setPayload(payloadSms)
+        smsRequest.setApiKey(frontLineSmsDetail.getApiKey())
+        println(smsRequest)
+        def obj = Utilities.parseToJSON(smsRequest)
+        println(obj)
+        RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
+        return smsRequest
+    }
+
 }
