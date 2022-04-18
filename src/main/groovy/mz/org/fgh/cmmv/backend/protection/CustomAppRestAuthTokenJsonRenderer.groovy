@@ -44,6 +44,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
         UserLogin.withTransaction {
             if(UserLogin.get(secUser.id)?.clinic?.id != null) {
                 mainEntityAssociated = UserLogin.get(secUser.id).clinic.id
+                districtId = UserLogin.get(secUser.id).clinic.district.id
                 clinicId = mainEntityAssociated
                 source = 'Clinic'
             }

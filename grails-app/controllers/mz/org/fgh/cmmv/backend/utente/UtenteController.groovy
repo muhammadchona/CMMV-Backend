@@ -44,7 +44,7 @@ class UtenteController extends RestfulController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     String codePrefixMz = "+258"
-    String defaultMessage= "Muito Obrigado por ter se cadastrado na Aplicacao de circuncisao masculina. O seu codigo de utente e:"
+    String defaultMessage= "Muito obrigado por se cadastrar na aplicacao de Circuncisao Masculina. O seu codigo de utente e: "
 
     UtenteController() {
         super(Utente)
@@ -91,7 +91,7 @@ class UtenteController extends RestfulController {
             //     utente.getUser().setUtente(utente)
             utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
             String messaging = defaultMessage+""+utente.getSystemNumber()
-            buildSmsFrontline(utente,messaging)
+        //    buildSmsFrontline(utente,messaging)
             utenteService.save(utente)
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
             messageService.save(message)
@@ -159,6 +159,12 @@ class UtenteController extends RestfulController {
         render JSONSerializer.setObjectListJsonResponse(utenteService.getAllByMobilizerId(communityMobilizerId)) as JSON
     }
 
+    def searchUtenteById(Long utenteId) {
+        def utente = utenteService.get(utenteId)
+        println(utente as JSON)
+        render 'utente'
+    }
+
     def searchClinicByUtente(Long utenteId) {
         def utente = utenteService.get(utenteId)
         println(utente?.clinic as JSON)
@@ -178,7 +184,7 @@ class UtenteController extends RestfulController {
         for (Address address : addresses) {
             utentes.add(address.getUtente())
         }
-        List<Utente> utentesList = new ArrayList<>(utentes);
+        List<Utente> utentesList = new ArrayList<>(utentes)
         render JSONSerializer.setObjectListJsonResponse(utentesList) as JSON
     }
 

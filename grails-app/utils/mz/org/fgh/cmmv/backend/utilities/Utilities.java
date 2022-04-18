@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Utilities {
@@ -94,4 +95,9 @@ public class Utilities {
         return DateUtils.addDays(date, (-1) * days);
     }
 
+    public static String parseDateToYYYYMMDDString(Date toParse){
+        SimpleDateFormat datetemp = new SimpleDateFormat("dd-MM-yyyy");
+        String data = datetemp.format(toParse);
+        return data;
+    }
 }

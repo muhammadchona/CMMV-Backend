@@ -95,7 +95,7 @@ class ClinicController extends RestfulController{
 
     def searchClinicsByDistrictId(Long districtId){
         District district = District.findById(districtId)
-        render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrict(district)) as JSON
+        render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrictAndActive(district,true)) as JSON
         // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }

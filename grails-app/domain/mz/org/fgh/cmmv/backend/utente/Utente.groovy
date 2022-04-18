@@ -26,6 +26,7 @@ class Utente {
    // @JsonBackReference
     CommunityMobilizer communityMobilizer
 
+   // Long  communityMobilizerId
    // @JsonIgnore
     UserLogin user
 
@@ -36,7 +37,7 @@ class Utente {
 
     static hasMany = [infoDocsImages: InfoDocsOrImages, addresses:Address , appointments: Appointment]
 
-    static fetchMode = [address: 'eager']
+    static fetchMode = [address: 'eager',communityMobilizer:'eager']
 
     static constraints = {
         lastNames(nullable: false, blank: false)

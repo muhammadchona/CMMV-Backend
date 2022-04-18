@@ -10,6 +10,7 @@ class Clinic {
     String type
     double latitude
     double longitude
+    boolean active
   //  Province province
 
     static belongsTo = [district: District]
@@ -20,5 +21,6 @@ class Clinic {
         type nullable: false
         latitude nullable: false
         longitude nullable: false
+        active nullable: false
     }
 }

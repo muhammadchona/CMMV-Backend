@@ -3,11 +3,19 @@ package mz.org.fgh.cmmv.backend.appointment
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.cmmv.backend.sms.PayloadSms
+import mz.org.cmmv.backend.sms.RecipientSms
+import mz.org.cmmv.backend.sms.RestFrontlineSms
+import mz.org.cmmv.backend.sms.SmsRequest
 import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
+import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
 import mz.org.fgh.cmmv.backend.utente.Utente
+import mz.org.fgh.cmmv.backend.utente.UtenteController
+import mz.org.fgh.cmmv.backend.utente.IUtenteService
+import mz.org.fgh.cmmv.backend.utente.UtenteService
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import mz.org.fgh.cmmv.backend.utilities.Utilities
 
@@ -23,9 +31,13 @@ class AppointmentController extends RestfulController {
 
     AppointmentService appointmentService
     ClinicService clinicService
+    FrontlineSmsDetailsService frontlineSmsDetailsService
+    UtenteService utenteService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    String codePrefixMz = "+258"
 
     AppointmentController() {
         super(Appointment)
@@ -80,6 +92,7 @@ class AppointmentController extends RestfulController {
 
     @Transactional
     def update(Appointment appointment) {
+     //   def utenteDB = Utente.findById(appointment.getUtenteId())
         if (appointment == null) {
             render status: NOT_FOUND
             return
@@ -91,6 +104,15 @@ class AppointmentController extends RestfulController {
         }
 
         try {
+             def utenteDB =  searchUtenteById(appointment.getUtenteId())
+
+            if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
+              //  String date = Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate())
+                String sms = "A sua consulta de circuncisao está marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
+                appointment.setSmsSent(true)
+              //  buildSmsFrontline(appointment,sms)
+            }
+            appointment.setUtente(utenteDB)
             appointmentService.save(appointment)
         } catch (ValidationException e) {
             respond appointment.errors
@@ -130,6 +152,13 @@ class AppointmentController extends RestfulController {
         render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic, startDate, endDate)) as JSON
     }
 
+    def searchUtenteById(Long utenteId) {
+        def utente = utenteService.get(utenteId)
+        println(utente as JSON)
+        render 'utente'
+    }
+
+
     def searchAppointmentsByClinicDistrictId(Long districtId) {
         District district = District.findById(districtId)
         List<Clinic> clinics = Clinic.findAllByDistrict(district)
@@ -147,6 +176,25 @@ class AppointmentController extends RestfulController {
             render status: NOT_FOUND
             return
         }
+    }
+
+    private SmsRequest buildSmsFrontline(Appointment appointment, String sms) {
+        def frontLineSmsDetail = frontlineSmsDetailsService.list().get(0)
+
+        SmsRequest smsRequest = new SmsRequest()
+        PayloadSms payloadSms = new PayloadSms()
+        RecipientSms recipientSMS = new RecipientSms()
+        recipientSMS.setType("mobile")
+        recipientSMS.setValue(codePrefixMz+appointment.utente.getCellNumber())
+        payloadSms.setMessage(sms)
+        payloadSms.setRecipients(recipientSMS)
+        smsRequest.setPayload(payloadSms)
+        smsRequest.setApiKey(frontLineSmsDetail.getApiKey())
+        println(smsRequest)
+        def obj = Utilities.parseToJSON(smsRequest)
+        println(obj)
+        RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
+        return smsRequest
     }
 
 

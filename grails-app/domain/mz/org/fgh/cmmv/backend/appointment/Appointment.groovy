@@ -12,6 +12,7 @@ class Appointment {
     String status
     Date visitDate
     Clinic clinic
+    boolean smsSent
 
     static belongsTo = [utente: Utente]
 
