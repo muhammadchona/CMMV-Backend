@@ -12,12 +12,14 @@ import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
+import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.utente.Utente
 import mz.org.fgh.cmmv.backend.utente.UtenteController
 import mz.org.fgh.cmmv.backend.utente.IUtenteService
 import mz.org.fgh.cmmv.backend.utente.UtenteService
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import mz.org.fgh.cmmv.backend.utilities.Utilities
+import org.hibernate.Hibernate
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -92,7 +94,6 @@ class AppointmentController extends RestfulController {
 
     @Transactional
     def update(Appointment appointment) {
-     //   def utenteDB = Utente.findById(appointment.getUtenteId())
         if (appointment == null) {
             render status: NOT_FOUND
             return
@@ -104,15 +105,16 @@ class AppointmentController extends RestfulController {
         }
 
         try {
-             def utenteDB =  searchUtenteById(appointment.getUtenteId())
 
             if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
               //  String date = Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate())
-                String sms = "A sua consulta de circuncisao está marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
+              //  String sms = "A sua consulta de circuncisao esta marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
                 appointment.setSmsSent(true)
-              //  buildSmsFrontline(appointment,sms)
+                buildSmsFrontline(appointment)
             }
-            appointment.setUtente(utenteDB)
+            CommunityMobilizer communityMobilizerUtente =  Hibernate.unproxy(appointment.getUtente().getOriginalValue('communityMobilizer'))
+            appointment.getUtente().setCommunityMobilizer(communityMobilizerUtente)
+            appointment.getUtente().setClinic(appointment.getClinic())
             appointmentService.save(appointment)
         } catch (ValidationException e) {
             respond appointment.errors
@@ -178,9 +180,9 @@ class AppointmentController extends RestfulController {
         }
     }
 
-    private SmsRequest buildSmsFrontline(Appointment appointment, String sms) {
-        def frontLineSmsDetail = frontlineSmsDetailsService.list().get(0)
-
+     SmsRequest buildSmsFrontline(Appointment appointment) {
+        def frontLineSmsDetail = frontlineSmsDetailsService.list(null).get(0)
+        String sms = "A sua consulta de circuncisao esta marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
         SmsRequest smsRequest = new SmsRequest()
         PayloadSms payloadSms = new PayloadSms()
         RecipientSms recipientSMS = new RecipientSms()
@@ -196,6 +198,5 @@ class AppointmentController extends RestfulController {
         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
         return smsRequest
     }
-
 
 }
