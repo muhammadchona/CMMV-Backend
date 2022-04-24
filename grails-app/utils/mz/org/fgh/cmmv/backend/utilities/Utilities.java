@@ -6,12 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 public class Utilities {
 
     private static Utilities instance;
+
+    public static final String END_DAY_TIME="23:59:59";
 
     private Utilities() {
     }
@@ -100,4 +105,34 @@ public class Utilities {
         String data = datetemp.format(toParse);
         return data;
     }
+
+    /** Returns the given date with time set to the end of the day */
+    public static Date getDateEnding(Date date) {
+        if (date == null) {
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 999);
+        return c.getTime();
+    }
+
+
+    public static Date getDateBegining(Date date) {
+        if (date == null) {
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, 00);
+        c.set(Calendar.MINUTE, 00);
+        c.set(Calendar.SECOND, 00);
+        c.set(Calendar.MILLISECOND, 999);
+        return c.getTime();
+    }
+
+
 }

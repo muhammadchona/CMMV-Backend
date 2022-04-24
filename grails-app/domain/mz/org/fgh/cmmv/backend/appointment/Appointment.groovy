@@ -16,6 +16,7 @@ class Appointment {
 
     static belongsTo = [utente: Utente]
 
+   // static fetchMode = [clinic: 'eager',utente:'eager']
     static constraints = {
         appointmentDate(nullable: false, blank: true)
         time nullable:false
@@ -24,5 +25,9 @@ class Appointment {
             return visitDate != null ? visitDate <= new Date() : null
         })
         status nullable: false , inList: ['PENDENTE','CONFIRMADO','REMARCADO']
+    }
+
+    static mapping = {
+        utente cascade: 'evict'
     }
 }
