@@ -105,16 +105,10 @@ class AppointmentController extends RestfulController {
         }
 
         try {
-
             if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
-              //  String date = Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate())
-              //  String sms = "A sua consulta de circuncisao esta marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
                 appointment.setSmsSent(true)
                 buildSmsFrontline(appointment)
             }
-            CommunityMobilizer communityMobilizerUtente =  Hibernate.unproxy(appointment.getUtente().getOriginalValue('communityMobilizer'))
-            appointment.getUtente().setCommunityMobilizer(communityMobilizerUtente)
-            appointment.getUtente().setClinic(appointment.getClinic())
             appointmentService.save(appointment)
         } catch (ValidationException e) {
             respond appointment.errors
@@ -151,7 +145,7 @@ class AppointmentController extends RestfulController {
         Date startDate = Utilities.getDateOfPreviousDays(currentDate, 90)
         Date endDate = Utilities.getDateOfForwardDays(currentDate, 90)
         Clinic clinic = clinicService.get(id)
-        render JSONSerializer.setObjectListJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic, startDate, endDate)) as JSON
+        render JSONSerializer.setObjectListAppointmentJsonResponse(Appointment.findAllByClinicAndAppointmentDateBetween(clinic, startDate, endDate)) as JSON
     }
 
     def searchUtenteById(Long utenteId) {
