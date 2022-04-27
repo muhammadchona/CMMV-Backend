@@ -1,6 +1,8 @@
 package mz.org.fgh.cmmv.backend.utilities
 
 import grails.web.*
+import mz.org.fgh.cmmv.backend.appointment.Appointment
+import mz.org.fgh.cmmv.backend.utente.Utente
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 
@@ -62,6 +64,19 @@ class JSONSerializer {
 
         for (object in objectList) {
             JSONObject jo = new JSONObject(new JSONSerializer(object).getJSON())
+            patientList.add(jo)
+        }
+
+        return patientList
+    }
+
+    static JSONArray setObjectListAppointmentJsonResponse(List<Appointment> appointments) {
+        JSONArray patientList = new JSONArray()
+
+        for (appointment in appointments) {
+           def utente1 = org.hibernate.Hibernate.unproxy(appointment.utente)
+            appointment.utente =utente1
+            JSONObject jo = new JSONObject(new JSONSerializer(appointment).getJSON())
             patientList.add(jo)
         }
 
