@@ -91,7 +91,7 @@ class UtenteController extends RestfulController {
             //     utente.getUser().setUtente(utente)
             utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
             String messaging = defaultMessage+""+utente.getSystemNumber()
-        //    buildSmsFrontline(utente,messaging)
+            buildSmsFrontline(utente,messaging)
             utenteService.save(utente)
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
             messageService.save(message)
