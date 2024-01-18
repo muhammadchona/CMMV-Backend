@@ -11,18 +11,14 @@ import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
-import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetails
 import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
 import mz.org.fgh.cmmv.backend.messages.MessageService
 import mz.org.fgh.cmmv.backend.mobilizer.ICommunityMobilizerService
-import mz.org.fgh.cmmv.backend.*
 
 //import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber
+
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import mz.org.fgh.cmmv.backend.utilities.Utilities
-import org.grails.web.json.JSONObject
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -74,6 +70,7 @@ class UtenteController extends RestfulController {
 
     @Transactional
     def save(Utente utente) {
+        utente.beforeInsert()
         if (utente == null) {
             render status: NOT_FOUND
             return
@@ -89,12 +86,12 @@ class UtenteController extends RestfulController {
 //            utente.getUser().setUsername(utente.getFirstNames())
             //      utente.getUser().setPassword(utente.getLastNames())
             //     utente.getUser().setUtente(utente)
-            utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
+          //  utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
             String messaging = defaultMessage+""+utente.getSystemNumber()
-            buildSmsFrontline(utente,messaging)
+         //   buildSmsFrontline(utente,messaging)
             utenteService.save(utente)
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
-            messageService.save(message)
+         //   messageService.save(message)
             /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
               System.out.println(message.getSid());*/
 

@@ -29,6 +29,8 @@ class UrlMappings {
         get "/api/districtUserLogin/district/$districtId(.$format)?"(controller:'districtUserLogin', action:'searchAllUsersByDistrictId')
         get "/api/utente/address/$districtId(.$format)?"(controller:'utente', action:'searchByAddressDistrictId')
         get "/api/appointment/district/$districtId(.$format)?"(controller:'appointment', action:'searchAppointmentsByClinicDistrictId ')
+        get "/api/clinic/search/$userLatitude/$userLongitude/$radiusInKm(.$format)?"(controller:'clinic', action:'findClinicsNearUser ')
+        get "/api/appointment/utente/search/$systemNumber(.$format)?"(controller:'appointment', action:'searchAppointmentByUtenteSystemNumber ')
         "/"(view:"/login/auth")
         "500"(view: '/error')
         "404"(view: '/notFound')
