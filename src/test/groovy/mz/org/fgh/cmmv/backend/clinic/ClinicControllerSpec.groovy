@@ -27,7 +27,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the save action correctly persists"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * save(_ as Clinic)
         }
 
@@ -71,7 +71,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * save(_ as Clinic) >> { Clinic clinic ->
                 throw new ValidationException("Invalid instance", clinic.errors)
             }
@@ -91,7 +91,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the show action with a null id"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the show action with a valid id"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * get(2) >> new Clinic()
         }
 
@@ -129,7 +129,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the update action correctly persists"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * save(_ as Clinic)
         }
 
@@ -150,7 +150,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * save(_ as Clinic) >> { Clinic clinic ->
                 throw new ValidationException("Invalid instance", clinic.errors)
             }
@@ -181,7 +181,7 @@ class ClinicControllerSpec extends Specification implements ControllerUnitTest<C
 
     void "Test the delete action with an instance"() {
         given:
-        controller.clinicService = Mock(IClinicService) {
+        controller.clinicService = Mock(ClinicService) {
             1 * delete(2) >> new Clinic(id: 2)
         }
 

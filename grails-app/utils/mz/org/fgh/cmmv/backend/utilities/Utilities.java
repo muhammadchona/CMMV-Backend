@@ -134,5 +134,19 @@ public class Utilities {
         return c.getTime();
     }
 
+    public static int extractMonthInDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        return month;
+    }
+
+    public static int extractYearInDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        return year;
+    }
+
 
 }

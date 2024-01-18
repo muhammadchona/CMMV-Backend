@@ -7,26 +7,20 @@ import mz.org.cmmv.backend.sms.PayloadSms
 import mz.org.cmmv.backend.sms.RecipientSms
 import mz.org.cmmv.backend.sms.RestFrontlineSms
 import mz.org.cmmv.backend.sms.SmsRequest
-import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
-import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.utente.Utente
-import mz.org.fgh.cmmv.backend.utente.UtenteController
-import mz.org.fgh.cmmv.backend.utente.IUtenteService
 import mz.org.fgh.cmmv.backend.utente.UtenteService
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 import mz.org.fgh.cmmv.backend.utilities.Utilities
-import org.hibernate.Hibernate
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
-import org.apache.commons.lang3.time.DateUtils;
 import grails.gorm.transactions.Transactional
 
 class AppointmentController extends RestfulController {
@@ -83,7 +77,7 @@ class AppointmentController extends RestfulController {
                     appointment.setOrderNumber(1)
                 }
             }
-            appointmentService.save(appointment)
+          appointmentService.save(appointment)
         } catch (ValidationException e) {
             respond appointment.errors
             return
@@ -191,6 +185,20 @@ class AppointmentController extends RestfulController {
         println(obj)
         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
         return smsRequest
+    }
+
+
+
+    def searchAppointmentByUtenteSystemNumber(String systemNumber) {
+        Utente utente = Utente.findBySystemNumber(systemNumber)
+        Appointment appointments = Appointment.findByUtente(utente)
+
+        if (appointments != null) {
+            render JSONSerializer.setJsonObjectResponse(appointments) as JSON
+        } else {
+            render status: NOT_FOUND
+            return
+        }
     }
 
 }

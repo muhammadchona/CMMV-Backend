@@ -7,6 +7,7 @@ import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.docsOrImages.InfoDocsOrImages
 import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.userLogin.UserLogin
+import mz.org.fgh.cmmv.backend.utilities.Utilities
 
 class Utente {
 
@@ -55,6 +56,18 @@ class Utente {
         communityMobilizer(nullable: true)
         clinic(nullable: true)
         user(nullable: true)
+    }
+
+    def beforeInsert() {
+        if (systemNumber == null) {
+            def appointment = appointments.getAt(0)
+            def month = Utilities.extractMonthInDate(appointment.appointmentDate)
+            if (month < 10) month  = '0'+String.valueOf(month)
+           // def month = Utilities.extractMonthInDate(appointment.appointmentDate)
+            def year = String.valueOf(Utilities.extractYearInDate(appointment.appointmentDate))
+            systemNumber = year+month+"-"+firstNames.substring(0,1)+lastNames.substring(0,1)+"-"+cellNumber
+           println(systemNumber)
+        }
     }
 }
 

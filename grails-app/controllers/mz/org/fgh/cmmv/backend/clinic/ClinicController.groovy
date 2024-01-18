@@ -4,7 +4,6 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
-import mz.org.fgh.cmmv.backend.mobilizer.CommunityMobilizer
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -98,4 +97,22 @@ class ClinicController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrictAndActive(district,true)) as JSON
         // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
+
+    def findClinicsNearUser(Double userLatitude, Double userLongitude, Double radiusInKm) {
+        def earthRadius = 6371 // Earth's radius in kilometers
+
+        // Calculate the maximum and minimum latitude and longitude
+        def maxLat = userLatitude + Math.toDegrees(radiusInKm / earthRadius)
+        def minLat = userLatitude - Math.toDegrees(radiusInKm / earthRadius)
+        def maxLon = userLongitude + Math.toDegrees(Math.asin(radiusInKm / earthRadius) / Math.cos(Math.toRadians(userLatitude)))
+        def minLon = userLongitude - Math.toDegrees(Math.asin(radiusInKm / earthRadius) / Math.cos(Math.toRadians(userLatitude)))
+
+        // Perform a GORM query to find clinics within the bounding box
+        def nearbyClinics = Clinic.findAll {
+            between('latitude', minLat, maxLat) && between('longitude', minLon, maxLon)  && eq('active', true)
+        }
+
+           render JSONSerializer.setObjectListJsonResponse(nearbyClinics) as JSON
+        }
+
 }
