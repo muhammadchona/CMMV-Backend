@@ -45,7 +45,7 @@ class Utente {
         birthDate(nullable: false, blank: true, validator: { birthDate, urc ->
             return birthDate != null ? birthDate <= new Date() : null
         })
-        cellNumber(nullable: false, matches: /\d+/, maxSize: 12, minSize: 9)
+        cellNumber(nullable: false, matches: /\d+/, maxSize: 12, minSize: 9, unique: ['firstNames','lastNames'])
         whatsappNumber(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         documentType(nullable: true, blank: true)
         documentNumber(nullable: true, blank: true)

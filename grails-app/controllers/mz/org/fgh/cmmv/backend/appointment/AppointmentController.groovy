@@ -11,6 +11,7 @@ import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
 import mz.org.fgh.cmmv.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
+import mz.org.fgh.cmmv.backend.userLogin.UserLogin
 import mz.org.fgh.cmmv.backend.utente.Utente
 import mz.org.fgh.cmmv.backend.utente.UtenteService
 import mz.org.fgh.cmmv.backend.utilities.JSONSerializer
@@ -87,7 +88,19 @@ class AppointmentController extends RestfulController {
     }
 
     @Transactional
-    def update(Appointment appointment) {
+    def update() {
+
+        def objectJSON = request.JSON
+        Appointment appointment = Appointment.get(objectJSON.getAt("id"))
+
+        appointment.status = objectJSON.getAt("status")
+        appointment.appointmentDate = Utilities.getDateToYYYYMMDDString(objectJSON.getAt("appointmentDate") as String)
+        appointment.hasHappened = objectJSON.getAt("hasHappened")
+
+        if(appointment.hasHappened)
+            appointment.visitDate = Utilities.getDateToYYYYMMDDString(objectJSON.getAt("visitDate") as String)
+        else
+            appointment.visitDate = null
         if (appointment == null) {
             render status: NOT_FOUND
             return
@@ -101,7 +114,7 @@ class AppointmentController extends RestfulController {
         try {
             if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
                 appointment.setSmsSent(true)
-                buildSmsFrontline(appointment)
+//                buildSmsFrontline(appointment)
             }
             appointmentService.save(appointment)
         } catch (ValidationException e) {
@@ -109,7 +122,7 @@ class AppointmentController extends RestfulController {
             return
         }
 
-        respond appointment, [status: OK, view: "show"]
+        render appointment as JSON
     }
 
     @Transactional

@@ -125,7 +125,7 @@ environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/cmmv
+            url: jdbc:postgresql://localhost:2345/cmmv
     test:
         dataSource:
             dbCreate: update

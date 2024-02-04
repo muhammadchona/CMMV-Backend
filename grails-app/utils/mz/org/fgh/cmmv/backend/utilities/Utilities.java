@@ -106,6 +106,15 @@ public class Utilities {
         return data;
     }
 
+    public static Date getDateToYYYYMMDDString(String toParse){
+        SimpleDateFormat datetemp = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return datetemp.parse(toParse);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /** Returns the given date with time set to the end of the day */
     public static Date getDateEnding(Date date) {
         if (date == null) {
