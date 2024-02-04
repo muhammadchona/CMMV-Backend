@@ -40,7 +40,11 @@ class UserLoginController extends RestfulController{
     }
 
     @Transactional
-    def save(UserLogin userLogin) {
+    def save() {
+        UserLogin userLogin = new UserLogin()
+        def objectJSON = request.JSON
+        userLogin = objectJSON as UserLogin
+
         SecRole secRole = SecRole.findByAuthority('ROLE_USER')
         if (userLogin == null) {
             render status: NOT_FOUND

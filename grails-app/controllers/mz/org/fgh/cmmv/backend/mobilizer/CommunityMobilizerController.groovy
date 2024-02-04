@@ -40,7 +40,7 @@ class CommunityMobilizerController extends RestfulController{
     }
 
     def show(Long id) {
-        render JSONSerializer.setJsonObjectResponse(communityMobilizerService.get(id)) as JSON
+        render communityMobilizerService.findAll() as JSON
     }
 
     @Transactional
@@ -110,7 +110,7 @@ class CommunityMobilizerController extends RestfulController{
 
     def searchByDistrictId(Long districtId){
         District district = District.findById(districtId)
-        render JSONSerializer.setObjectListJsonResponse(CommunityMobilizer.findAllByDistrict(district)) as JSON
-       // respond communityMobilizerService.getAllByDistrictId(districtId)
+       // render JSONSerializer.setObjectListJsonResponse(CommunityMobilizer.findAllByDistrict(district)) as JSON
+        render CommunityMobilizer.findAllByDistrict(district) as JSON
     }
 }
