@@ -106,6 +106,12 @@ public class Utilities {
         return data;
     }
 
+    public static String parseDateToYYYYMMDDStringWithSlash(Date toParse){
+        SimpleDateFormat datetemp = new SimpleDateFormat("dd/MM/yyyy");
+        String data = datetemp.format(toParse);
+        return data;
+    }
+
     public static Date getDateToYYYYMMDDString(String toParse){
         SimpleDateFormat datetemp = new SimpleDateFormat("yyyy-MM-dd");
         try {

@@ -65,9 +65,8 @@ class Utente {
             if (month < 10) month  = '0'+String.valueOf(month)
            // def month = Utilities.extractMonthInDate(appointment.appointmentDate)
             def year = String.valueOf(Utilities.extractYearInDate(registerDate))
-            systemNumber = year+month+"-"+firstNames.substring(0,1)+lastNames.substring(0,1)+"-"+cellNumber
+            systemNumber = year+month+"-"+firstNames.substring(0,1).toUpperCase()+lastNames.substring(0,1).toUpperCase()+"-"+cellNumber
            println(systemNumber)
         }
     }
 }
-

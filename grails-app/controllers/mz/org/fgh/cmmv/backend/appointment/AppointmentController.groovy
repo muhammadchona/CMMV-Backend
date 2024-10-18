@@ -6,6 +6,7 @@ import grails.validation.ValidationException
 import mz.org.cmmv.backend.sms.PayloadSms
 import mz.org.cmmv.backend.sms.RecipientSms
 import mz.org.cmmv.backend.sms.RestFrontlineSms
+import mz.org.cmmv.backend.sms.SmsGateway
 import mz.org.cmmv.backend.sms.SmsRequest
 import mz.org.fgh.cmmv.backend.clinic.Clinic
 import mz.org.fgh.cmmv.backend.clinic.ClinicService
@@ -112,9 +113,12 @@ class AppointmentController extends RestfulController {
         }
 
         try {
-            if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
+            if(appointment.getStatus() == 'PENDENTE') {
+                buildSmsUtenteReschedule(appointment)
+            }
+            else if(appointment.getStatus() == 'CONFIRMADO' && !appointment.isHasHappened() && !appointment.isSmsSent()) {
                 appointment.setSmsSent(true)
-//                buildSmsFrontline(appointment)
+               buildSmsFrontline(appointment)
             }
             appointmentService.save(appointment)
         } catch (ValidationException e) {
@@ -181,9 +185,10 @@ class AppointmentController extends RestfulController {
         }
     }
 
-     SmsRequest buildSmsFrontline(Appointment appointment) {
+     void buildSmsFrontline(Appointment appointment) {
         def frontLineSmsDetail = frontlineSmsDetailsService.list(null).get(0)
         String sms = "A sua consulta de circuncisao esta marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
+     /*
         SmsRequest smsRequest = new SmsRequest()
         PayloadSms payloadSms = new PayloadSms()
         RecipientSms recipientSMS = new RecipientSms()
@@ -194,10 +199,39 @@ class AppointmentController extends RestfulController {
         smsRequest.setPayload(payloadSms)
         smsRequest.setApiKey(frontLineSmsDetail.getApiKey())
         println(smsRequest)
-        def obj = Utilities.parseToJSON(smsRequest)
+      */
+         SmsGateway newSms = new SmsGateway()
+         newSms.setDestination(appointment.utente.getCellNumber())
+         newSms.setText(sms)
+         newSms.setService('pensa-cmmv')
+         def obj = Utilities.parseToJSON(newSms)
+         println(obj)
+         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
+    }
+
+
+    void buildSmsUtenteReschedule(Appointment appointment) {
+        def frontLineSmsDetail = frontlineSmsDetailsService.list(null).get(0)
+        String sms = "A solicitacao de consulta foi efectuada com sucesso! Aguarde pela confirmacao via SMS, de disponibilidade do lado da unidade sanitaria ${appointment.getClinic().getName()}, para dia ${Utilities.parseDateToYYYYMMDDStringWithSlash(appointment.getAppointmentDate())}. O seu código de utente eh ${appointment.utente.systemNumber}. Este codigo serve para visualizar dados da sua consulta e/ou alterar no sistema CMMV, bem como deve ser apresentado quando for a unidade sanitaria para a sua identificacao."
+        /*
+           SmsRequest smsRequest = new SmsRequest()
+           PayloadSms payloadSms = new PayloadSms()
+           RecipientSms recipientSMS = new RecipientSms()
+           recipientSMS.setType("mobile")
+           recipientSMS.setValue(codePrefixMz+appointment.utente.getCellNumber())
+           payloadSms.setMessage(sms)
+           payloadSms.setRecipients(recipientSMS)
+           smsRequest.setPayload(payloadSms)
+           smsRequest.setApiKey(frontLineSmsDetail.getApiKey())
+           println(smsRequest)
+         */
+        SmsGateway newSms = new SmsGateway()
+        newSms.setDestination(appointment.utente.getCellNumber())
+        newSms.setText(sms)
+        newSms.setService('pensa-cmmv')
+        def obj = Utilities.parseToJSON(newSms)
         println(obj)
         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
-        return smsRequest
     }
 
 

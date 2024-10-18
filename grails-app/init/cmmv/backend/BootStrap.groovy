@@ -24,7 +24,7 @@ import javax.persistence.EntityNotFoundException
 
 class BootStrap {
 
-    public static final String REST_API_URL = "http://dev.fgh.org.mz:8180/api/1/webhook"
+    public static final String REST_API_URL = "http://172.16.100.2:8080/sms/send"
     public static final String API_KEY = "60205d65-8824-4f08-b915-ed28cbdd7430"
 
     FrontlineSmsDetailsService frontlineSmsDetailsService

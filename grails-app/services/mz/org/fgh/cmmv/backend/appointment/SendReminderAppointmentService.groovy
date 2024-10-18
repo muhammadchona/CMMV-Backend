@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import mz.org.cmmv.backend.sms.PayloadSms
 import mz.org.cmmv.backend.sms.RecipientSms
 import mz.org.cmmv.backend.sms.RestFrontlineSms
+import mz.org.cmmv.backend.sms.SmsGateway
 import mz.org.cmmv.backend.sms.SmsRequest
 import mz.org.fgh.cmmv.backend.messages.FrontlineSmsDetailsService
 import mz.org.fgh.cmmv.backend.utilities.Utilities
@@ -49,9 +50,10 @@ class SendReminderAppointmentService {
         }
     }
 
-    SmsRequest buildSmsFrontline(Appointment appointment) {
+    void buildSmsFrontline(Appointment appointment) {
         def frontLineSmsDetail = frontlineSmsDetailsService.list(null).get(0)
         String sms = "A sua consulta de circuncisao esta marcada para o dia "+ Utilities.parseDateToYYYYMMDDString(appointment.getAppointmentDate()) +", na Unidade Sanitaria : "+appointment.getClinic().getName()
+        /*
         SmsRequest smsRequest = new SmsRequest()
         PayloadSms payloadSms = new PayloadSms()
         RecipientSms recipientSMS = new RecipientSms()
@@ -62,9 +64,14 @@ class SendReminderAppointmentService {
         smsRequest.setPayload(payloadSms)
         smsRequest.setApiKey(frontLineSmsDetail.getApiKey())
         println(smsRequest)
-        def obj = Utilities.parseToJSON(smsRequest)
+*/
+        SmsGateway newSms = new SmsGateway()
+        newSms.setDestination(appointment.utente.getCellNumber())
+        newSms.setText(sms)
+        newSms.setService('pensa-cmmv')
+        def obj = Utilities.parseToJSON(newSms)
         println(obj)
         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
-        return smsRequest
+      //  return newSms
     }
 }

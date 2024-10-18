@@ -6,6 +6,7 @@ import grails.validation.ValidationException
 import mz.org.cmmv.backend.sms.PayloadSms
 import mz.org.cmmv.backend.sms.RecipientSms
 import mz.org.cmmv.backend.sms.RestFrontlineSms
+import mz.org.cmmv.backend.sms.SmsGateway
 import mz.org.cmmv.backend.sms.SmsRequest
 import mz.org.fgh.cmmv.backend.address.Address
 import mz.org.fgh.cmmv.backend.clinic.Clinic
@@ -40,7 +41,7 @@ class UtenteController extends RestfulController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     String codePrefixMz = "+258"
-    String defaultMessage= "Muito obrigado por se cadastrar na aplicacao de Circuncisao Masculina. O seu codigo de utente e: "
+   // String defaultMessage= "Caro utente, a solicitacao de consulta para o dia  ${appointmentDate} foi efectuada, e aguarda pela confirmacao da unidade sanitaria. Use o código de utente ${utenteNumber} caso pretenda remarcar no sistema CMMV."
 
     UtenteController() {
         super(Utente)
@@ -71,6 +72,7 @@ class UtenteController extends RestfulController {
     @Transactional
     def save(Utente utente) {
         utente.beforeInsert()
+        utente.validate()
         if (utente == null) {
             render status: NOT_FOUND
             return
@@ -87,11 +89,11 @@ class UtenteController extends RestfulController {
             //      utente.getUser().setPassword(utente.getLastNames())
             //     utente.getUser().setUtente(utente)
           //  utente.setSystemNumber(utente.getFirstNames().substring(0, 1) + utente.getLastNames().substring(0, 1) + "-" + utente.getCellNumber())
-            String messaging = defaultMessage+""+utente.getSystemNumber()
-         //   buildSmsFrontline(utente,messaging)
+            String messaging = buildSmsRegister(utente)
+            buildSmsFrontline(utente,messaging)
             utenteService.save(utente)
             mz.org.fgh.cmmv.backend.messages.Message message =  buildMessage(utente , messaging)
-         //   messageService.save(message)
+            messageService.save(message)
             /*  Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
               System.out.println(message.getSid());*/
 
@@ -194,9 +196,10 @@ class UtenteController extends RestfulController {
         return message;
     }
 
-    private SmsRequest buildSmsFrontline(Utente utente, String sms) {
+    private void buildSmsFrontline(Utente utente, String sms) {
         def frontLineSmsDetail = frontlineSmsDetailsService.list().get(0)
 
+        /*
         SmsRequest smsRequest = new SmsRequest()
         PayloadSms payloadSms = new PayloadSms()
         RecipientSms recipientSMS = new RecipientSms()
@@ -211,6 +214,24 @@ class UtenteController extends RestfulController {
         println(obj)
         RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
         return smsRequest
+         */
+
+        SmsGateway newSms = new SmsGateway()
+        newSms.setDestination(utente.getCellNumber())
+        newSms.setText(sms)
+        newSms.setService('pensa-cmmv')
+
+        def obj = Utilities.parseToJSON(newSms)
+        println(obj)
+       RestFrontlineSms.requestSmsSender(obj,frontLineSmsDetail)
+
+    }
+
+    String buildSmsRegister (Utente utente) {
+
+        String defaultMessage= "Caro utente, a solicitacao de consulta para o dia ${Utilities.parseDateToYYYYMMDDStringWithSlash(utente.appointments.getAt(0).appointmentDate)} foi efectuada, e aguarda pela confirmacao da unidade sanitaria. Use o codigo de utente ${utente.systemNumber} caso pretenda remarcar no sistema CMMV."
+
+        return defaultMessage
     }
 
 }
